@@ -115,10 +115,9 @@ contract Proccessor{
 
         payable(_to).call{value : ramount}("");
 
-        if(_implementor != address(0)){
+        if(_implementor != address(0))
             payable(_implementor).call{value : iamount}("");
-        }
-
+        
         if(vaultAddress != address(0))
             payable(vaultAddress).call{value : vamount}("");
         else if(swapAddress != address(0))

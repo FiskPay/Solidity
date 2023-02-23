@@ -9,11 +9,24 @@
 				"inputs": [
 					{
 						"internalType": "string",
-						"name": "name",
+						"name": "_name",
 						"type": "string"
 					}
 				],
-				"name": "GetAddress",
+				"name": "GetContractAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "GetOwner",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -38,7 +51,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Corporation/Clerk.sol": "IParent"
+			"contracts/Corporation/Employees.sol": "IParent"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -52,12 +65,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Corporation/Clerk.sol": {
-			"keccak256": "0x8c6e082dc6f8e6a90ef51b542f9381677136f94934dd55043108c59e7852366a",
+		"contracts/Corporation/Employees.sol": {
+			"keccak256": "0x89c858d87f08609fd9355fa2d746ed23cf30dfb0b26d2a37e44d1d358249b93d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0826909a707e626fb1dc73837b2fde075d2fddff5e03105f4bf442dfb217a7f5",
-				"dweb:/ipfs/QmQuEyi7f5Ek8YwPhmWBY5YUz6jpH9VLw22rgDXnq36DEf"
+				"bzz-raw://46398855e4bf098c5c7f14913283d3dffd2edbd8fdb5fdc687f49b7334477002",
+				"dweb:/ipfs/QmeRtqc9ypSTHiSD7drHS56hdLfWhVFsxZsNQqshZo3Wwn"
 			]
 		}
 	},

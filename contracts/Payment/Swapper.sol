@@ -144,7 +144,7 @@ contract Swapper{
 
             (bool sent,) = payable(msg.sender).call{value : address(this).balance}("");
 
-            if(!sent)
+            if(sent != true)
                 revert("Withdraw failed");
         }
         else

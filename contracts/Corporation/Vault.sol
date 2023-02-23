@@ -76,7 +76,7 @@ contract Vault{
 
         (bool sent,) = payable(clerkAddress).call{value : _amount}("");
 
-        if(!sent)
+        if(sent != true)
             revert("ClerkWithdraw failed");
 
         reentrantLocked = false;

@@ -72,7 +72,7 @@ contract Clerk{
 
             (bool sent,) = payable(_reciever).call{value : _amount}("");
 
-            if(!sent)
+            if(sent != true)
                 revert("ClerkWithdraw failed");
         }
         catch{ revert("ClerkWithdraw failed"); }
