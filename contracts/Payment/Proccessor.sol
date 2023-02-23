@@ -27,20 +27,20 @@ interface IERC20{
     function approve(address _spender, uint256 _value) external returns(bool);
     function allowance(address _owner, address _spender) external view returns(uint256);
     function balanceOf(address _owner) external view returns(uint256);
-    function transfer(address _to, uint256 _value) external returns (bool);
-    function transferFrom(address _from, address _to, uint256 _value) external returns(bool);
+    function transfer(address _receiver, uint256 _value) external returns (bool);
+    function transferFrom(address _from, address _receiver, uint256 _value) external returns(bool);
 }
 
 interface ISwapper{
     
-    function Swap(address _token, uint256 _amount) external returns(bool);
+    function Swap(address _receiverken, uint256 _amount) external returns(bool);
 }
 
 contract Proccessor{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Proccessed(address indexed _from, address indexed _to, address _currency, uint256 _amount);
+    event Proccessed(address indexed _from, address indexed _receiver, address _currency, uint256 _amount);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
@@ -106,14 +106,14 @@ contract Proccessor{
         vamount = _amount - (ramount + iamount);
     }
 
-    function _transferMATIC(uint256 _amount, address _to, address _implementor) private returns(address){
+    function _transferMATIC(uint256 _amount, address _receiver, address _implementor) private returns(address){
 
         (uint256 ramount, uint256 iamount, uint256 vamount) = _split("MATIC", _amount, _implementor);
 
         address vaultAddress = pt.GetContractAddress(".Corporation.Vault");
         address swapAddress = pt.GetContractAddress(".Payment.Swapper");
 
-        payable(_to).call{value : ramount}("");
+        payable(_receiver).call{value : ramount}("");
 
         if(_implementor != address(0))
             payable(_implementor).call{value : iamount}("");
@@ -128,7 +128,7 @@ contract Proccessor{
         return (MATIC);
     }
 
-    function _transferToken(string calldata _symbol, uint256 _amount, address _to, address _implementor) private returns(address){
+    function _transferToken(string calldata _symbol, uint256 _amount, address _receiver, address _implementor) private returns(address){
 
         address swapperAddress = pt.GetContractAddress(".Payment.Swapper");
         ISwapper sw = ISwapper(swapperAddress);
@@ -152,7 +152,7 @@ contract Proccessor{
 
         (uint256 ramount, uint256 iamount, uint256 vamount) = _split(_symbol, _amount, _implementor);
 
-        tk.transfer(_to, ramount);
+        tk.transfer(_receiver, ramount);
 
         if(_implementor != address(0))
             tk.transfer(_implementor, iamount);
@@ -172,25 +172,36 @@ contract Proccessor{
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
-    function Proccess(string calldata _symbol, uint256 _amount, address _to, address _implementor) public payable returns(bool){
+    function Proccess(string calldata _symbol, uint256 _amount, address _receiver, address _implementor) public payable returns(bool){
 
         if(reentrantLocked)
             revert("Reentrance failed");
 
         reentrantLocked = true;
 
+        uint32 size;
+        assembly{size := extcodesize(_receiver)}
+
+        if(size != 0)
+            revert("Receiver is contract");
+
+        assembly{size := extcodesize(_implementor)}
+
+        if(size != 0)
+            revert("Implementor is contract");
+
         address tokenAddress = address(0);
 
         if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0)
-            tokenAddress = _transferMATIC(msg.value, _to, _implementor);
+            tokenAddress = _transferMATIC(msg.value, _receiver, _implementor);
         else if(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked("MATIC")) && _amount > 0 && msg.value == 0)
-            tokenAddress = _transferToken(_symbol, _amount, _to, _implementor);
+            tokenAddress = _transferToken(_symbol, _amount, _receiver, _implementor);
         else
             revert("Proccessing failed");
 
         reentrantLocked = false;
 
-        emit Proccessed(msg.sender, _to, tokenAddress, _amount);
+        emit Proccessed(msg.sender, _receiver, tokenAddress, _amount);
         return true;
     }
 
