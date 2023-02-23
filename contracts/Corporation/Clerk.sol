@@ -16,7 +16,7 @@ contract Clerk{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Withdraw(address indexed _orderer, address indexed _receiver, uint256 _amount);
+    event ClerkWithdraw(address indexed _orderer, address indexed _receiver, uint256 _amount);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
@@ -93,7 +93,7 @@ contract Clerk{
 
         _withdrawTo(_employee, _amount);
 
-        emit Withdraw(employeesAddress, _employee, _amount);
+        emit ClerkWithdraw(employeesAddress, _employee, _amount);
         return true;
     }
 

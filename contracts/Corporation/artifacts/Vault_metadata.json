@@ -9,19 +9,6 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "_amount",
-						"type": "uint256"
-					}
-				],
-				"name": "ClerkWithdrawal",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
 						"indexed": true,
 						"internalType": "address",
 						"name": "_from",
@@ -35,6 +22,19 @@
 					}
 				],
 				"name": "Deposit",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "VaultWithdraw",
 				"type": "event"
 			},
 			{
@@ -132,11 +132,11 @@
 	},
 	"sources": {
 		"contracts/Corporation/Vault.sol": {
-			"keccak256": "0x2e9c40bbbfa99493f14088280d77348df34ea38596cc0dc330831f57d0a4f285",
+			"keccak256": "0x27be1eaebf5b13668849778032f7de3f8bf53bffda84f91c027012d8bddd4d3a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://223a157fc21501139b7ff196ebfe11253175bb5ccc5d275cbd7d8616041e073e",
-				"dweb:/ipfs/QmajXePDW6ogGhczREiqeWGCyFNahstY62yxyxmkZxV9zf"
+				"bzz-raw://e9bfe7d1288b62ebdb9f1fac72421b1267ffce81327c4866a11112c0e0d3f897",
+				"dweb:/ipfs/QmQ1GRAECiHScURfVnbr4gb5oeX85G3i1jhb6nNBAnmnAR"
 			]
 		}
 	},

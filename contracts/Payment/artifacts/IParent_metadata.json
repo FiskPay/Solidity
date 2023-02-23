@@ -6,21 +6,14 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"name": "GetMATIC",
-				"outputs": [
+				"inputs": [
 					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "GetOwner",
+				"name": "GetContractAddress",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -45,7 +38,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Payment/Currencies.sol": "IParent"
+			"contracts/Payment/Implementors.sol": "IParent"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -59,12 +52,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Payment/Currencies.sol": {
-			"keccak256": "0xbbee9c7f43f5f4f65f516152d161bf0fc1a250d367b982665acd97561944fd92",
+		"contracts/Payment/Implementors.sol": {
+			"keccak256": "0xb4cf2f4205530178f5da98afabae6cdc27afaed2eb7643f0f6c4dc8d5dde504c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0fb7b04bdb6e8175acb9a3dde6a16ae6d8f6adb24dd48bc8aa7baaf5c1d6bf42",
-				"dweb:/ipfs/QmaU9sqXYDrUigomiC34iGspq3dcruAzY9oEFeNDv8SVo6"
+				"bzz-raw://f30978f8da621683152347045469aad07d5192ee3627f3232e573886b411f3c2",
+				"dweb:/ipfs/QmdcVb4E2opKn18vjKVHSMVu5tE3KHFqm744L1v7DWANrv"
 			]
 		}
 	},

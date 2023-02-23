@@ -11,7 +11,7 @@ contract Vault{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event ClerkWithdrawal(uint256 _amount);
+    event VaultWithdraw(uint256 _amount);
     event Deposit(address indexed _from, uint256 _amount);
 
 //-----------------------------------------------------------------------// v INTERFACES
@@ -77,11 +77,11 @@ contract Vault{
         (bool sent,) = payable(clerkAddress).call{value : _amount}("");
 
         if(!sent)
-            revert("ClerkWithdrawal failed");
+            revert("ClerkWithdraw failed");
 
         reentrantLocked = false;
 
-        emit ClerkWithdrawal(_amount);
+        emit VaultWithdraw(_amount);
         return true;
     }
 
