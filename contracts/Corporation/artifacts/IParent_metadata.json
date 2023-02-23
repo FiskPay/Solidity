@@ -38,7 +38,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Corporation/Clerk.sol": "IParent"
+			"contracts/Corporation/Vault.sol": "IParent"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -52,12 +52,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Corporation/Clerk.sol": {
-			"keccak256": "0x3f851ee59492b4114a48b2c99ef3cc96b8d26922063c291544da5b813df19d99",
+		"contracts/Corporation/Vault.sol": {
+			"keccak256": "0x2e9c40bbbfa99493f14088280d77348df34ea38596cc0dc330831f57d0a4f285",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b542477a8732c91334b1409e02a36c462be2ffec4b826fb29f623d7344cd802f",
-				"dweb:/ipfs/QmcB1M59MvhDr61DZ82Nfh5qf5GnBdsBwAtbM4qj12J9Rf"
+				"bzz-raw://223a157fc21501139b7ff196ebfe11253175bb5ccc5d275cbd7d8616041e073e",
+				"dweb:/ipfs/QmajXePDW6ogGhczREiqeWGCyFNahstY62yxyxmkZxV9zf"
 			]
 		}
 	},
