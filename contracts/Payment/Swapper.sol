@@ -117,7 +117,7 @@ contract Swapper{
         }
 
         if(vaultAddress != address(0) && address(this).balance > 0)
-            payable(vaultAddress).transfer(address(this).balance);
+            payable(vaultAddress).call{value : address(this).balance}("");
 
         return true;
     }
@@ -140,8 +140,13 @@ contract Swapper{
         if(pt.GetOwner() != msg.sender)
             revert("Owner only");
 
-        if(address(this).balance > 0)
-            payable(msg.sender).transfer(address(this).balance);
+        if(address(this).balance > 0){
+
+            (bool sent,) = payable(msg.sender).call{value : address(this).balance}("");
+
+            if(!sent)
+                revert("Withdraw failed");
+        }
         else
             revert("MATIC balance is zero");
 

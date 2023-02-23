@@ -74,7 +74,10 @@ contract Vault{
         if(clerkAddress != msg.sender)
             revert("Clerk only");
 
-        payable(clerkAddress).transfer(_amount);
+        (bool sent,) = payable(clerkAddress).call{value : _amount}("");
+
+        if(!sent)
+            revert("ClerkWithdrawal failed");
 
         reentrantLocked = false;
 

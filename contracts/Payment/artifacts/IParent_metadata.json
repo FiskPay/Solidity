@@ -6,6 +6,25 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					}
+				],
+				"name": "GetContractAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "GetMATIC",
 				"outputs": [
@@ -15,7 +34,7 @@
 						"type": "address"
 					}
 				],
-				"stateMutability": "view",
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
@@ -45,7 +64,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Payment/Currencies.sol": "IParent"
+			"contracts/Payment/Proccessor.sol": "IParent"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -59,12 +78,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Payment/Currencies.sol": {
-			"keccak256": "0xbbee9c7f43f5f4f65f516152d161bf0fc1a250d367b982665acd97561944fd92",
+		"contracts/Payment/Proccessor.sol": {
+			"keccak256": "0x67b250304b9e8c4d59b10790144d3a65a614fae59892b30ef6938eb009eeb09a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0fb7b04bdb6e8175acb9a3dde6a16ae6d8f6adb24dd48bc8aa7baaf5c1d6bf42",
-				"dweb:/ipfs/QmaU9sqXYDrUigomiC34iGspq3dcruAzY9oEFeNDv8SVo6"
+				"bzz-raw://1c73238b37a439cb52f90c62960d0f78ac00750fd600849ea6707c5cb3c07fcc",
+				"dweb:/ipfs/QmNeHyaQot6L8Tyxp4F8apzQvmjzNQBCFAKQJ9qikbujKu"
 			]
 		}
 	},

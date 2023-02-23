@@ -82,7 +82,7 @@ contract Proccessor{
 
 //-----------------------------------------------------------------------// v PRIVATE FUNCTIONS
 
-    function _split(string memory _symbol, uint256 _amount, address _implementor) private returns(uint256 ramount, uint256 iamount, uint256 bamount){
+    function _split(string memory _symbol, uint256 _amount, address _implementor) private returns(uint256 ramount, uint256 iamount, uint256 vamount){
 
         address implementorsAddress = pt.GetContractAddress(".Payment.Implementors");
         IImplementors ir = IImplementors(implementorsAddress);
@@ -98,30 +98,33 @@ contract Proccessor{
         else
             fee = cy.GetTokenFee(_symbol);
 
-        if(_implementor != address(0) && implementorsAddress != address(0))
+        if(_implementor != address(0))
             reward = ir.GetEpochReward(_implementor);
 
         ramount = uint256(_amount - (_amount * fee) / 100000);
         iamount = uint256(((_amount - ramount) * reward) / 1000);
-        bamount = _amount - (ramount + iamount);
+        vamount = _amount - (ramount + iamount);
     }
 
-    function _transferMATIC(address _to, address _implementor) private returns(address){
+    function _transferMATIC(uint256 _amount, address _to, address _implementor) private returns(address){
 
-        (uint256 ramount, uint256 iamount, uint256 bamount) = _split("MATIC", msg.value, _implementor);
+        (uint256 ramount, uint256 iamount, uint256 vamount) = _split("MATIC", _amount, _implementor);
 
         address vaultAddress = pt.GetContractAddress(".Corporation.Vault");
         address swapAddress = pt.GetContractAddress(".Payment.Swapper");
 
-        payable(_to).transfer(ramount);
-        payable(_implementor).transfer(iamount);
+        payable(_to).call{value : ramount}("");
+
+        if(_implementor != address(0)){
+            payable(_implementor).call{value : iamount}("");
+        }
 
         if(vaultAddress != address(0))
-            payable(vaultAddress).transfer(bamount);
+            payable(vaultAddress).call{value : vamount}("");
         else if(swapAddress != address(0))
-            payable(swapAddress).transfer(bamount);
+            payable(swapAddress).call{value : vamount}("");
         else
-            payable(pt.GetOwner()).transfer(bamount);
+            payable(pt.GetOwner()).call{value : vamount}("");
 
         return (MATIC);
     }
@@ -148,18 +151,20 @@ contract Proccessor{
 
         tk.transferFrom(msg.sender, address(this), _amount);
 
-        (uint256 ramount, uint256 iamount, uint256 bamount) = _split(_symbol, _amount, _implementor);
+        (uint256 ramount, uint256 iamount, uint256 vamount) = _split(_symbol, _amount, _implementor);
 
         tk.transfer(_to, ramount);
-        tk.transfer(_implementor, iamount);
+
+        if(_implementor != address(0))
+            tk.transfer(_implementor, iamount);
 
         if(swapperAddress != address(0)){
 
-            tk.approve(swapperAddress, bamount);
-            sw.Swap(tokenAddress, bamount);
+            tk.approve(swapperAddress, vamount);
+            sw.Swap(tokenAddress, vamount);
         }
         else
-            tk.transfer(pt.GetOwner(), bamount);
+            tk.transfer(pt.GetOwner(), vamount);
 
         return (tokenAddress);
     }
@@ -178,7 +183,7 @@ contract Proccessor{
         address tokenAddress = address(0);
 
         if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0)
-            tokenAddress = _transferMATIC(_to, _implementor);
+            tokenAddress = _transferMATIC(msg.value, _to, _implementor);
         else if(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked("MATIC")) && _amount > 0 && msg.value == 0)
             tokenAddress = _transferToken(_symbol, _amount, _to, _implementor);
         else

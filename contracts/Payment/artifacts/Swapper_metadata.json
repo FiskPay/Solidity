@@ -124,11 +124,11 @@
 			]
 		},
 		"contracts/Payment/Swapper.sol": {
-			"keccak256": "0xff8b6dc197507fe5132b1bec95cf8ab8632564dd73ae55c26a3971baabcf7e2f",
+			"keccak256": "0xd6f5f4282fd15a294a90830c774a51c5d7bab578ed3ec920f9d496109e255202",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://718ebf69601a207f7f64f8dd94f015065515e91a12968f93e737b9f999cd7a2b",
-				"dweb:/ipfs/QmWKRZqPABcVy34tN6ybRTJCHx6tvdFn9XpuJ4FBHDmNXY"
+				"bzz-raw://5f96481365e418cf56240299fa2e040793d0e871f46a6f29dbdf2a182d56d328",
+				"dweb:/ipfs/QmYsKv9HgbsvoB5kxFEdwoXF59gng9rcWCt89tJa6JGSFs"
 			]
 		},
 		"node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol": {

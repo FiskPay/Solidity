@@ -68,10 +68,16 @@ contract Clerk{
         if(_amount > address(vaultAddress).balance)
             revert("Not enough MATIC");
 
-        try vt.ClerkWithdraw(_amount){}
+        try vt.ClerkWithdraw(_amount){
+
+            (bool sent,) = payable(_reciever).call{value : _amount}("");
+
+            if(!sent)
+                revert("ClerkWithdraw failed");
+        }
         catch{ revert("ClerkWithdraw failed"); }
 
-        payable(_reciever).transfer(_amount);
+        
     }
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
