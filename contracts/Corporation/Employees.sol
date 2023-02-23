@@ -55,8 +55,7 @@ contract Employees{
 
         bool status;
         uint16 dailyWage;
-        uint32 lastPayment;
-        
+        uint32 lastPayment;  
     }
 
 //-----------------------------------------------------------------------// v ENUMS
