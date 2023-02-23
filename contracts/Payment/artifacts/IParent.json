@@ -49,21 +49,14 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"GetContractAddress(string)": "c75ffd86",
-			"GetOwner()": "0ae50a39",
-			"GetWMATIC()": "e666cdef"
+			"GetMATIC()": "ee5503d0",
+			"GetOwner()": "0ae50a39"
 		}
 	},
 	"abi": [
 		{
-			"inputs": [
-				{
-					"internalType": "string",
-					"name": "_name",
-					"type": "string"
-				}
-			],
-			"name": "GetContractAddress",
+			"inputs": [],
+			"name": "GetMATIC",
 			"outputs": [
 				{
 					"internalType": "address",
@@ -77,19 +70,6 @@
 		{
 			"inputs": [],
 			"name": "GetOwner",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "GetWMATIC",
 			"outputs": [
 				{
 					"internalType": "address",
