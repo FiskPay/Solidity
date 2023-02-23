@@ -1,0 +1,115 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"stateMutability": "nonpayable",
+				"type": "fallback"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_implementor",
+						"type": "address"
+					}
+				],
+				"name": "GetEpochReward",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_implementor",
+						"type": "address"
+					}
+				],
+				"name": "GetImplementorProfile",
+				"outputs": [
+					{
+						"internalType": "uint24",
+						"name": "epochSales",
+						"type": "uint24"
+					},
+					{
+						"internalType": "uint32",
+						"name": "epochEnd",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint8",
+						"name": "epochReward",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "Name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"FiskPay\\Payment\\Implementors.sol": "Implementors"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"FiskPay\\Payment\\Implementors.sol": {
+			"keccak256": "0xd734dce81ef1350f5c4173c402f775baad9237a1801a4d796fe20d3732b2f0a3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7d691d19061defadbd086b74e3e032a104b5719aeccb1bd010dbffb8805ac133",
+				"dweb:/ipfs/QmbDNVULyQ9u3eoRsMFKkomXA51jnL3MGhCkrc3MsfCKSM"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,59 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "Name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"FiskPay\\Parent.sol": "ParentInterface"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"FiskPay\\Parent.sol": {
+			"keccak256": "0x3382cee94343e498cae9cf258767dad32d3d5f77284ccaa04e8298779638dc6d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://969d1cc350f49b8b4284d72d4b176b87e084f711cceab9c259b9ffed17e9a272",
+				"dweb:/ipfs/QmWQvin4kiyCReoWutMY1XxuP8UE8NeLzNo28ufPeBd4Wr"
+			]
+		}
+	},
+	"version": 1
+}
