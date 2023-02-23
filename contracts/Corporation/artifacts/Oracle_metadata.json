@@ -17,6 +17,11 @@
 						"internalType": "uint8",
 						"name": "",
 						"type": "uint8"
+					},
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -27,9 +32,9 @@
 				"name": "GetMATICPrice",
 				"outputs": [
 					{
-						"internalType": "int256",
+						"internalType": "uint256",
 						"name": "",
-						"type": "int256"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -66,7 +71,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"FiskPay/Corporation/Oracle.sol": "Oracle"
+			"contracts/Corporation/Oracle.sol": "Oracle"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -80,12 +85,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"FiskPay/Corporation/Oracle.sol": {
-			"keccak256": "0x171245f7d082e8c8f0398b1ecca8aef9876ef361a4795e5003a37a4a79e6ced6",
+		"contracts/Corporation/Oracle.sol": {
+			"keccak256": "0x916217dd3fad23555b591fc2cc13e6d2d605589de39ec8d253d779ea3d6953e7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d4ec8eec706d3533a5fdf4e9c757d29326e4d096dc28d5e5300b5909ba77d0ed",
-				"dweb:/ipfs/QmZGdzubUjkVUN1ACYSNYAFFE9ad5DSmZXfK4SC2FQXVLE"
+				"bzz-raw://2c2411669aa926e236f451207acef670a08793e202814c9731802596035ebfbe",
+				"dweb:/ipfs/QmZ6DgRbc9yhFVhty3EXgZb8PGZrXHgV67BZ8UgPssKCKf"
 			]
 		}
 	},

@@ -7,28 +7,15 @@
 		"abi": [
 			{
 				"inputs": [],
-				"name": "decimals",
+				"name": "Name",
 				"outputs": [
 					{
-						"internalType": "uint8",
+						"internalType": "string",
 						"name": "",
-						"type": "uint8"
+						"type": "string"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "latestAnswer",
-				"outputs": [
-					{
-						"internalType": "int256",
-						"name": "",
-						"type": "int256"
-					}
-				],
-				"stateMutability": "view",
+				"stateMutability": "pure",
 				"type": "function"
 			}
 		],
@@ -45,7 +32,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Corporation/Oracle.sol": "IChainlink"
+			"contracts/Parent.sol": "IGlobal"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -59,12 +46,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Corporation/Oracle.sol": {
-			"keccak256": "0x916217dd3fad23555b591fc2cc13e6d2d605589de39ec8d253d779ea3d6953e7",
+		"contracts/Parent.sol": {
+			"keccak256": "0x49db74b8493837979ce37679d5a95009c39bf85b50c85047dc280847f5671844",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2c2411669aa926e236f451207acef670a08793e202814c9731802596035ebfbe",
-				"dweb:/ipfs/QmZ6DgRbc9yhFVhty3EXgZb8PGZrXHgV67BZ8UgPssKCKf"
+				"bzz-raw://e5541963369475092dfbe5675fb3c934108693b718f879608666a97dca2f7b0d",
+				"dweb:/ipfs/QmPAjpBrvCSKVe2koVSfv2A8Un9CxzR9jEeMxMSK1fXpDE"
 			]
 		}
 	},

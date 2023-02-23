@@ -6,53 +6,91 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
 				"anonymous": false,
 				"inputs": [
 					{
 						"indexed": true,
-						"internalType": "address",
-						"name": "_currency",
-						"type": "address"
-					}
-				],
-				"name": "CurrencyAddition",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "_currency",
-						"type": "address"
-					}
-				],
-				"name": "CurrencyRemoval",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "_currency",
-						"type": "address"
+						"internalType": "string",
+						"name": "_iname",
+						"type": "string"
 					},
 					{
 						"indexed": false,
-						"internalType": "uint24",
-						"name": "_fee",
-						"type": "uint24"
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
 					}
 				],
-				"name": "UpdateFee",
+				"name": "ContractAddition",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "_iname",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					}
+				],
+				"name": "ContractRemoval",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "_iname",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "ContractUpdate",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipChange",
 				"type": "event"
 			},
 			{
@@ -60,10 +98,23 @@
 				"type": "fallback"
 			},
 			{
+				"inputs": [],
+				"name": "AcceptOwnership",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "string",
-						"name": "_symbol",
+						"name": "_name",
 						"type": "string"
 					},
 					{
@@ -72,7 +123,26 @@
 						"type": "address"
 					}
 				],
-				"name": "AddCurrency",
+				"name": "AddContract",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_newOwner",
+						"type": "address"
+					}
+				],
+				"name": "ChangeOwnership",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -87,29 +157,16 @@
 				"inputs": [
 					{
 						"internalType": "string",
-						"name": "_symbol",
+						"name": "_name",
 						"type": "string"
 					}
 				],
-				"name": "GetCurrencyAddress",
+				"name": "GetContractAddress",
 				"outputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "GetCurrencyList",
-				"outputs": [
-					{
-						"internalType": "string[]",
-						"name": "",
-						"type": "string[]"
 					}
 				],
 				"stateMutability": "view",
@@ -123,7 +180,7 @@
 						"type": "address"
 					}
 				],
-				"name": "GetCurrencySymbol",
+				"name": "GetContractName",
 				"outputs": [
 					{
 						"internalType": "string",
@@ -136,31 +193,25 @@
 			},
 			{
 				"inputs": [],
-				"name": "GetMATICFee",
+				"name": "GetMATIC",
 				"outputs": [
 					{
-						"internalType": "uint24",
+						"internalType": "address",
 						"name": "",
-						"type": "uint24"
+						"type": "address"
 					}
 				],
-				"stateMutability": "view",
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "string",
-						"name": "_symbol",
-						"type": "string"
-					}
-				],
-				"name": "GetTokenFee",
+				"inputs": [],
+				"name": "GetOwner",
 				"outputs": [
 					{
-						"internalType": "uint24",
+						"internalType": "address",
 						"name": "",
-						"type": "uint24"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -168,45 +219,26 @@
 			},
 			{
 				"inputs": [],
-				"name": "Name",
+				"name": "GetWMATIC",
 				"outputs": [
 					{
-						"internalType": "string",
+						"internalType": "address",
 						"name": "",
-						"type": "string"
+						"type": "address"
 					}
 				],
-				"stateMutability": "view",
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "string",
-						"name": "_symbol",
+						"name": "_name",
 						"type": "string"
 					}
 				],
-				"name": "RemoveCurrency",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint24",
-						"name": "_fee",
-						"type": "uint24"
-					}
-				],
-				"name": "UpdateMATICFee",
+				"name": "RemoveContract",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -221,16 +253,16 @@
 				"inputs": [
 					{
 						"internalType": "string",
-						"name": "_symbol",
+						"name": "_name",
 						"type": "string"
 					},
 					{
-						"internalType": "uint24",
-						"name": "_fee",
-						"type": "uint24"
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
 					}
 				],
-				"name": "UpdateTokenFee",
+				"name": "UpdateContract",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -259,7 +291,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Payment/Currencies.sol": "Currencies"
+			"contracts/Parent.sol": "Parent"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -273,12 +305,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Payment/Currencies.sol": {
-			"keccak256": "0xbbee9c7f43f5f4f65f516152d161bf0fc1a250d367b982665acd97561944fd92",
+		"contracts/Parent.sol": {
+			"keccak256": "0x49db74b8493837979ce37679d5a95009c39bf85b50c85047dc280847f5671844",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0fb7b04bdb6e8175acb9a3dde6a16ae6d8f6adb24dd48bc8aa7baaf5c1d6bf42",
-				"dweb:/ipfs/QmaU9sqXYDrUigomiC34iGspq3dcruAzY9oEFeNDv8SVo6"
+				"bzz-raw://e5541963369475092dfbe5675fb3c934108693b718f879608666a97dca2f7b0d",
+				"dweb:/ipfs/QmPAjpBrvCSKVe2koVSfv2A8Un9CxzR9jEeMxMSK1fXpDE"
 			]
 		}
 	},

@@ -6,6 +6,31 @@
 	"output": {
 		"abi": [
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "_orderer",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "_receiver",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Withdraw",
+				"type": "event"
+			},
+			{
 				"stateMutability": "payable",
 				"type": "fallback"
 			},
@@ -13,48 +38,24 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_implementor",
+						"name": "_employee",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
 					}
 				],
-				"name": "GetEpochReward",
+				"name": "EmployeesWithdraw",
 				"outputs": [
 					{
-						"internalType": "uint8",
+						"internalType": "bool",
 						"name": "",
-						"type": "uint8"
+						"type": "bool"
 					}
 				],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_implementor",
-						"type": "address"
-					}
-				],
-				"name": "GetImplementorProfile",
-				"outputs": [
-					{
-						"internalType": "uint32",
-						"name": "epochSales",
-						"type": "uint32"
-					},
-					{
-						"internalType": "uint32",
-						"name": "epochEnd",
-						"type": "uint32"
-					},
-					{
-						"internalType": "uint8",
-						"name": "epochReward",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -88,7 +89,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Payment/Implementors.sol": "Implementors"
+			"contracts/Corporation/Clerk.sol": "Clerk"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -102,12 +103,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Payment/Implementors.sol": {
-			"keccak256": "0xb4cf2f4205530178f5da98afabae6cdc27afaed2eb7643f0f6c4dc8d5dde504c",
+		"contracts/Corporation/Clerk.sol": {
+			"keccak256": "0xdf800c92c632358b8307b464a94cf206c64ac1a849f4ffb935ad2762a548c1b4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f30978f8da621683152347045469aad07d5192ee3627f3232e573886b411f3c2",
-				"dweb:/ipfs/QmdcVb4E2opKn18vjKVHSMVu5tE3KHFqm744L1v7DWANrv"
+				"bzz-raw://4521014a2e43768e0f0005a975b37e32fc837fc56aaf865a5e8657a25e49dfbc",
+				"dweb:/ipfs/QmQEchqXe8j8chCtwcvLLrCtWuEfjSNotpTJHNzGScAQRP"
 			]
 		}
 	},

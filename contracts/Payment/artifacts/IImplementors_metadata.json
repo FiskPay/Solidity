@@ -6,8 +6,14 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"name": "decimals",
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_implementor",
+						"type": "address"
+					}
+				],
+				"name": "GetEpochReward",
 				"outputs": [
 					{
 						"internalType": "uint8",
@@ -15,20 +21,7 @@
 						"type": "uint8"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "latestAnswer",
-				"outputs": [
-					{
-						"internalType": "int256",
-						"name": "",
-						"type": "int256"
-					}
-				],
-				"stateMutability": "view",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
@@ -45,7 +38,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Corporation/Oracle.sol": "IChainlink"
+			"contracts/Payment/Proccessor.sol": "IImplementors"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -59,12 +52,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Corporation/Oracle.sol": {
-			"keccak256": "0x916217dd3fad23555b591fc2cc13e6d2d605589de39ec8d253d779ea3d6953e7",
+		"contracts/Payment/Proccessor.sol": {
+			"keccak256": "0x2bcdd6145b1a02af42f2dbb7bf4230117974c188580e5183d42e09e6d8fac792",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2c2411669aa926e236f451207acef670a08793e202814c9731802596035ebfbe",
-				"dweb:/ipfs/QmZ6DgRbc9yhFVhty3EXgZb8PGZrXHgV67BZ8UgPssKCKf"
+				"bzz-raw://49eb9cfe8d5054ad6c9d9677dc8eac7fdf9ac61d0438c08eb41bc2800584106a",
+				"dweb:/ipfs/QmexHmSCMKtWNrcgtgTaEpr8yiivvmGRAyaPz9zJ19HKpr"
 			]
 		}
 	},

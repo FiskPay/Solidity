@@ -24,7 +24,7 @@ contract Vault{
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
-    address constant private parentAddress = 0xce4a03425A64A41387b3ae4BDFb621d9C3D9b501;
+    address constant private parentAddress = 0x72ec1287FF5BB960fd54Ac2AdAE99145153C561F;
 
 //-----------------------------------------------------------------------// v NUMBERS
 

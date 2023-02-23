@@ -7,12 +7,12 @@
 		"abi": [
 			{
 				"inputs": [],
-				"name": "decimals",
+				"name": "GetMATIC",
 				"outputs": [
 					{
-						"internalType": "uint8",
+						"internalType": "address",
 						"name": "",
-						"type": "uint8"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -20,12 +20,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "latestAnswer",
+				"name": "GetOwner",
 				"outputs": [
 					{
-						"internalType": "int256",
+						"internalType": "address",
 						"name": "",
-						"type": "int256"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -45,7 +45,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Corporation/Oracle.sol": "IChainlink"
+			"contracts/Payment/Currencies.sol": "IParent"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -59,12 +59,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Corporation/Oracle.sol": {
-			"keccak256": "0x916217dd3fad23555b591fc2cc13e6d2d605589de39ec8d253d779ea3d6953e7",
+		"contracts/Payment/Currencies.sol": {
+			"keccak256": "0xbbee9c7f43f5f4f65f516152d161bf0fc1a250d367b982665acd97561944fd92",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2c2411669aa926e236f451207acef670a08793e202814c9731802596035ebfbe",
-				"dweb:/ipfs/QmZ6DgRbc9yhFVhty3EXgZb8PGZrXHgV67BZ8UgPssKCKf"
+				"bzz-raw://0fb7b04bdb6e8175acb9a3dde6a16ae6d8f6adb24dd48bc8aa7baaf5c1d6bf42",
+				"dweb:/ipfs/QmaU9sqXYDrUigomiC34iGspq3dcruAzY9oEFeNDv8SVo6"
 			]
 		}
 	},

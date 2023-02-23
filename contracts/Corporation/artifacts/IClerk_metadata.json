@@ -6,29 +6,27 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"name": "decimals",
-				"outputs": [
+				"inputs": [
 					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
+						"internalType": "address",
+						"name": "_employee",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "latestAnswer",
+				"name": "EmployeesWithdraw",
 				"outputs": [
 					{
-						"internalType": "int256",
+						"internalType": "bool",
 						"name": "",
-						"type": "int256"
+						"type": "bool"
 					}
 				],
-				"stateMutability": "view",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
@@ -45,7 +43,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Corporation/Oracle.sol": "IChainlink"
+			"contracts/Corporation/Employees.sol": "IClerk"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -59,12 +57,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Corporation/Oracle.sol": {
-			"keccak256": "0x916217dd3fad23555b591fc2cc13e6d2d605589de39ec8d253d779ea3d6953e7",
+		"contracts/Corporation/Employees.sol": {
+			"keccak256": "0xf147f2a9ed7f12a0dfb51fb7c4582c92e5c58442d27972b0eab59f497865346a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2c2411669aa926e236f451207acef670a08793e202814c9731802596035ebfbe",
-				"dweb:/ipfs/QmZ6DgRbc9yhFVhty3EXgZb8PGZrXHgV67BZ8UgPssKCKf"
+				"bzz-raw://ba5355bd9b8218b647bc10bcdfec4b3ccccecfb45763efa26dd9cb45bde25eef",
+				"dweb:/ipfs/QmX5SXPY7n244z34cAC9i1iVLpXye8eCApxnEaTLM8giwq"
 			]
 		}
 	},
