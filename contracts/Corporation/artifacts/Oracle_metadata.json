@@ -6,7 +6,7 @@
 	"output": {
 		"abi": [
 			{
-				"stateMutability": "payable",
+				"stateMutability": "nonpayable",
 				"type": "fallback"
 			},
 			{
@@ -86,11 +86,11 @@
 	},
 	"sources": {
 		"contracts/Corporation/Oracle.sol": {
-			"keccak256": "0x2374874a6899efa2cac77e3d7426f608620bd5f31752861615761544b3c6a192",
+			"keccak256": "0xfcfe80f52232ae4c603961c7b13934f971c193998ba29584628d4fe09dcac872",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://eeb86243176d9cfe87f78f36d1fa0a332d368d5ac0a4eb5898dacfbb2b4c2a83",
-				"dweb:/ipfs/QmXof2Kg6QZBJpYy7KyjnCRmqHMCp9MxKknyBmXh61upc5"
+				"bzz-raw://afe361471d4f23db0937d31e1dfbd642a0e31ec3b07f51505a49cee29778ba78",
+				"dweb:/ipfs/QmcmFydR9o4tbQLrYjVfSxhe3LKyHW2P3gTemPgPF5iZ62"
 			]
 		}
 	},
