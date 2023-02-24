@@ -10,7 +10,12 @@ interface IParent{
     function GetWMATIC() external view returns(address);
 }
 
-interface ISwapRouter{
+interface IUniswapV3SwapCallback {
+
+    function uniswapV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes calldata data) external;
+}
+
+interface ISwapRouter is IUniswapV3SwapCallback {
 
     struct ExactInputSingleParams {
         address tokenIn;
@@ -23,7 +28,7 @@ interface ISwapRouter{
         uint160 sqrtPriceLimitX96;
     }
 
-    function exactInputSingle(ExactInputSingleParams calldata params) external payable returns(uint256);
+    function exactInputSingle(ExactInputSingleParams calldata params) external payable returns (uint256 amountOut);
 }
 
 interface IERC20{
@@ -34,7 +39,6 @@ interface IERC20{
     function transferFrom(address _from, address _to, uint256 _value) external returns(bool);
     function balanceOf(address _owner) external view returns(uint256);
 }
-
 interface IWMATIC{
 
     function balanceOf(address _owner) external view returns(uint256);

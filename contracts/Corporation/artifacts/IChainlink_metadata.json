@@ -53,8 +53,8 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
-			"runs": 20000
+			"enabled": false,
+			"runs": 200
 		},
 		"remappings": []
 	},
