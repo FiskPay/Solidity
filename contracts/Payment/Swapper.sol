@@ -10,6 +10,22 @@ interface IParent{
     function GetWMATIC() external view returns(address);
 }
 
+interface ISwapRouter{
+
+    struct ExactInputSingleParams {
+        address tokenIn;
+        address tokenOut;
+        uint24 fee;
+        address recipient;
+        uint256 deadline;
+        uint256 amountIn;
+        uint256 amountOutMinimum;
+        uint160 sqrtPriceLimitX96;
+    }
+
+    function exactInputSingle(ExactInputSingleParams calldata params) external payable returns(uint256);
+}
+
 interface IERC20{
 
     function approve(address _spender, uint256 _value) external returns(bool);
@@ -23,8 +39,6 @@ interface IWMATIC{
     function balanceOf(address _owner) external view returns(uint256);
     function withdraw(uint _wad) external;
 }
-
-import '../../node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
 
 contract Swapper{
 
