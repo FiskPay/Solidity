@@ -53,11 +53,11 @@
 	},
 	"sources": {
 		"contracts/Corporation/Clerk.sol": {
-			"keccak256": "0x8c6e082dc6f8e6a90ef51b542f9381677136f94934dd55043108c59e7852366a",
+			"keccak256": "0xb8fe07274af5196f74c766a1dcaca10d6e6036ffd107418b38039b5b14cca980",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0826909a707e626fb1dc73837b2fde075d2fddff5e03105f4bf442dfb217a7f5",
-				"dweb:/ipfs/QmQuEyi7f5Ek8YwPhmWBY5YUz6jpH9VLw22rgDXnq36DEf"
+				"bzz-raw://280e67c0b0254a38dac9eddacd40b64eb6422e757422fbfd2d3cc742829b2727",
+				"dweb:/ipfs/QmWQZznkyDafhoAsej5ee9wxQGRYuYSDAV8j4tUuMcgy8u"
 			]
 		}
 	},

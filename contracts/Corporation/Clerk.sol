@@ -4,7 +4,7 @@ pragma solidity 0.8.18;
 
 interface IParent{
 
-    function GetAddress(string calldata name) external view returns(address);
+    function GetContractAddress(string calldata name) external view returns(address);
 }
 
 interface IVault{
@@ -48,7 +48,7 @@ contract Clerk{
 
     modifier noReentrant{
 
-        if(reentrantLocked)
+        if(reentrantLocked == true)
             revert("Reentrance failed");
 
         reentrantLocked = true;
@@ -62,7 +62,7 @@ contract Clerk{
 
     function _withdrawTo(address _reciever, uint256 _amount) private returns(bool){
 
-        address vaultAddress = pt.GetAddress(".Corporation.Vault");
+        address vaultAddress = pt.GetContractAddress(".Corporation.Vault");
         IVault vt = IVault(vaultAddress);
 
         if(_amount > address(vaultAddress).balance)
@@ -73,11 +73,11 @@ contract Clerk{
             (bool sent,) = payable(_reciever).call{value : _amount}("");
 
             if(sent != true)
-                return false;
+                return(false);
 
-            return true;
+            return(true);
         }
-        catch{ return false; }
+        catch{ return(false); }
     }
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
@@ -86,16 +86,16 @@ contract Clerk{
 
     function EmployeesWithdraw(address _employee, uint256 _amount) public noReentrant returns(bool){
 
-        address employeesAddress = pt.GetAddress(".Corporation.Employees");
+        address employeesAddress = pt.GetContractAddress(".Corporation.Employees");
 
         if(employeesAddress != msg.sender)
             revert("Employees only");
 
         if(_withdrawTo(_employee, _amount) != true)
-            revert("ClerkWithdraw failed");
+            revert("EmployeesWithdraw failed");
         
         emit ClerkWithdraw(employeesAddress, _employee, _amount);
-        return true;
+        return(true);
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS

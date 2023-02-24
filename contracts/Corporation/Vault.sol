@@ -4,7 +4,7 @@ pragma solidity 0.8.18;
 
 interface IParent{
 
-    function GetAddress(string calldata name) external view returns(address);
+    function GetContractAddress(string calldata name) external view returns(address);
 }
 
 contract Vault{
@@ -52,24 +52,24 @@ contract Vault{
 
     function GetTotalMATIC() public view returns(uint256){
 
-        return (totalMATIC);
+        return(totalMATIC);
     }
 
     function GetCurrentMATIC() public view returns(uint256){
 
-        return (address(this).balance);
+        return(address(this).balance);
     }
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
     function ClerkWithdraw(uint256 _amount) public returns(bool){
 
-        if(reentrantLocked)
+        if(reentrantLocked == true)
             revert("Reentrance failed");
 
         reentrantLocked = true;
 
-        address clerkAddress = pt.GetAddress(".Corporation.Clerk");
+        address clerkAddress = pt.GetContractAddress(".Corporation.Clerk");
 
         if(clerkAddress != msg.sender)
             revert("Clerk only");
@@ -77,12 +77,12 @@ contract Vault{
         (bool sent,) = payable(clerkAddress).call{value : _amount}("");
 
         if(sent != true)
-            revert("ClerkWithdraw failed");
+           revert("ClerkWithdraw failed");
 
         reentrantLocked = false;
 
         emit VaultWithdraw(_amount);
-        return true;
+        return(true);
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS
@@ -95,7 +95,7 @@ contract Vault{
 
     fallback() external{
 
-        address clerkAddress = pt.GetAddress(".Corporation.Clerk");
+        address clerkAddress = pt.GetContractAddress(".Corporation.Clerk");
 
         if(clerkAddress != msg.sender)
             revert("Clerk only");

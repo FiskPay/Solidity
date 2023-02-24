@@ -125,7 +125,7 @@ contract Proccessor{
         else
             payable(pt.GetOwner()).call{value : vamount}("");
 
-        return (MATIC);
+        return(MATIC);
     }
 
     function _transferToken(string calldata _symbol, uint256 _amount, address _receiver, address _implementor) private returns(address){
@@ -165,7 +165,7 @@ contract Proccessor{
         else
             tk.transfer(pt.GetOwner(), vamount);
 
-        return (tokenAddress);
+        return(tokenAddress);
     }
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
@@ -174,7 +174,7 @@ contract Proccessor{
 
     function Proccess(string calldata _symbol, uint256 _amount, address _receiver, address _implementor) public payable returns(bool){
 
-        if(reentrantLocked)
+        if(reentrantLocked == true)
             revert("Reentrance failed");
 
         reentrantLocked = true;
@@ -202,7 +202,7 @@ contract Proccessor{
         reentrantLocked = false;
 
         emit Proccessed(msg.sender, _receiver, tokenAddress, _amount);
-        return true;
+        return(true);
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS

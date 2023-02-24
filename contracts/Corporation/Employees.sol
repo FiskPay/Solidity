@@ -53,7 +53,7 @@ contract Employees{
 
     struct Employee{
 
-        bool status;
+        bool isActive;
         uint16 dailyWage;
         uint32 lastPayment;  
     }
@@ -80,11 +80,24 @@ contract Employees{
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
+    function GetEmployeeDailyWage(address _employee) public view returns(uint16){
+
+        return(employees[_employee].dailyWage);
+    }
+
+    function GetEmployeeStatus(address _employee) public view returns(bool){
+
+        if(employees[_employee].isActive == true)
+            return(true);
+
+        return(false);
+    }
+
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
     function EmployeePayoff() public returns(bool){
 
-        if(reentrantLocked)
+        if(reentrantLocked == true)
             revert("Reentrance failed");
 
         reentrantLocked = true;
@@ -102,7 +115,7 @@ contract Employees{
 
         (uint8 decimals, bool success) = oc.GetMATICDecimals();
 
-        if(!success)
+        if(success != true)
             revert("Oracle unreachable");
 
         uint256 price = oc.GetMATICPrice();
@@ -112,9 +125,9 @@ contract Employees{
 
         uint32 unpaidDays = uint32((block.timestamp - employee.lastPayment) / (1 days));
         uint32 moduloDays = uint32((block.timestamp - employee.lastPayment) % (1 days));
-        uint256 amount = uint256(employee.dailyWage * unpaidDays * 10**decimals / price);
+        uint256 amount = uint256(employee.dailyWage * unpaidDays * (10 ** decimals) / (price * 100));
 
-        if(employee.status == true)
+        if(employee.isActive == true)
             employee.lastPayment = uint32(block.timestamp - moduloDays);
         else{
 
@@ -122,38 +135,47 @@ contract Employees{
             employee.dailyWage = 0;
         }
 
+        if(amount == 0)
+            revert("Already paid");
+
         try cl.EmployeesWithdraw(msg.sender, amount){}
         catch{ revert("Payoff failed"); }
 
         reentrantLocked = false;
 
         emit PayoffSent(msg.sender, amount);
-        return true;
+        return(true);
     }
     //
     function AddEmployee(address _employee, uint16 _dailyWage) public ownerOnly returns(bool){
 
         Employee storage employee = employees[_employee];
 
-        if(employee.status == true)
+        if(employee.isActive == true)
             revert("Already employeed");
+
+        uint32 size;
+        assembly{size := extcodesize(_employee)}
+
+        if(size != 0)
+            revert("Employee is contract");
 
         if(_dailyWage == 0)
             revert("Zero wage");
 
         employee.dailyWage = _dailyWage;
         employee.lastPayment = uint32(block.timestamp);
-        employee.status = true;
+        employee.isActive = true;
 
         emit EmployeeAddition(_employee,  _dailyWage);
-        return true;
+        return(true);
     }
 
     function UpdateEmployee(address _employee, uint16 _dailyWage) public ownerOnly returns(bool){
 
         Employee storage employee = employees[_employee];
 
-        if(employee.status != true)
+        if(employee.isActive != true)
             revert("Not an employee");
 
         if(_dailyWage == 0)
@@ -162,20 +184,20 @@ contract Employees{
         employee.dailyWage = _dailyWage;
 
         emit EmployeeUpdate(_employee, _dailyWage);
-        return true;
+        return(true);
     }
 
     function RemoveEmployee(address _employee) public ownerOnly returns(bool){
 
         Employee storage employee = employees[_employee];
 
-        if(employee.status != true)
+        if(employee.isActive != true)
             revert("Not an employee");
 
-        employee.status = false;
+        employee.isActive = false;
 
         emit EmployeeRemoval( _employee);
-        return true;
+        return(true);
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS

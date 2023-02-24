@@ -103,7 +103,7 @@ contract Implementors{
 
         imp.epochSales += 1;
 
-        return (imp.epochReward);
+        return(imp.epochReward);
     }
     
 //-----------------------------------------------------------------------// v DEFAULTS

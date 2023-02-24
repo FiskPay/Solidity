@@ -49,19 +49,20 @@ contract Oracle{
         try mu.latestAnswer() returns(int256 answer){
 
             if(answer <=0)
-                return 0;
+                return(0);
 
-            return (uint256(answer));
+            return(uint256(answer));
         }
-        catch{ return 0; }
+        catch{ return(0); }
     }
 
     function GetMATICDecimals() public view returns(uint8, bool){
 
         try mu.decimals() returns(uint8 decimals){
-            return (decimals, true);
+
+            return(decimals, true);
         }
-        catch{ return (0, false); }
+        catch{ return(0, false); }
     }
 //-----------------------------------------------------------------------// v SET FUNTIONS
 

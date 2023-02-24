@@ -119,7 +119,7 @@ contract Swapper{
         if(vaultAddress != address(0) && address(this).balance > 0)
             payable(vaultAddress).call{value : address(this).balance}("");
 
-        return true;
+        return(true);
     }
     
     function WithdrawToken(address _token) public returns(bool) {
@@ -132,7 +132,7 @@ contract Swapper{
         else
             revert("Token balance is zero");
 
-        return true;
+        return(true);
     }
 
     function WithdrawMATIC() public returns(bool) {
@@ -150,7 +150,7 @@ contract Swapper{
         else
             revert("MATIC balance is zero");
 
-        return true;
+        return(true);
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS

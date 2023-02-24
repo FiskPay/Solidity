@@ -57,7 +57,7 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_token",
+					"name": "_receiverken",
 					"type": "address"
 				},
 				{

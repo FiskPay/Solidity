@@ -60,11 +60,11 @@
 	},
 	"sources": {
 		"contracts/Corporation/Oracle.sol": {
-			"keccak256": "0x916217dd3fad23555b591fc2cc13e6d2d605589de39ec8d253d779ea3d6953e7",
+			"keccak256": "0x2374874a6899efa2cac77e3d7426f608620bd5f31752861615761544b3c6a192",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2c2411669aa926e236f451207acef670a08793e202814c9731802596035ebfbe",
-				"dweb:/ipfs/QmZ6DgRbc9yhFVhty3EXgZb8PGZrXHgV67BZ8UgPssKCKf"
+				"bzz-raw://eeb86243176d9cfe87f78f36d1fa0a332d368d5ac0a4eb5898dacfbb2b4c2a83",
+				"dweb:/ipfs/QmXof2Kg6QZBJpYy7KyjnCRmqHMCp9MxKknyBmXh61upc5"
 			]
 		}
 	},

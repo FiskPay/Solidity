@@ -132,7 +132,7 @@ contract Currencies{
         currencies.push(_symbol);
 
         emit CurrencyAddition(tokenAddress);
-        return true;
+        return(true);
     }
 
     function RemoveCurrency(string calldata _symbol) public ownerOnly returns(bool){
@@ -160,7 +160,7 @@ contract Currencies{
         currencies.pop();
 
         emit CurrencyRemoval(tokenAddress);
-        return true;
+        return(true);
     }
     //
     function UpdateTokenFee(string calldata _symbol, uint24 _fee) public ownerOnly returns(bool){
@@ -176,7 +176,7 @@ contract Currencies{
         currencyFee[tokenAddress] = _fee;
 
         emit UpdateFee(tokenAddress, _fee);
-        return true;
+        return(true);
     }
 
     function UpdateMATICFee(uint24 _fee) public ownerOnly returns(bool){
@@ -187,7 +187,7 @@ contract Currencies{
         currencyFee[MATIC] = _fee;
 
         emit UpdateFee(MATIC, _fee);
-        return true;
+        return(true);
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS

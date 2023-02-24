@@ -13,9 +13,9 @@ contract Parent{
 
     event OwnershipChange(address indexed _from, address indexed _to);
     //
-    event ContractAddition(string indexed _iname, string _name, address _address);
-    event ContractUpdate(string indexed _iname, string _name, address _address);
-    event ContractRemoval(string indexed _iname, string _name);
+    event ContractAddition(string indexed _nameHash, string _name, address _address);
+    event ContractUpdate(string indexed _nameHash, string _name, address _address);
+    event ContractRemoval(string indexed _nameHash, string _name);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
@@ -91,7 +91,7 @@ contract Parent{
 
         newOwner = _newOwner;
 
-        return true;
+        return(true);
     }
 
     function AcceptOwnership() public returns(bool){
@@ -105,7 +105,7 @@ contract Parent{
         delete newOwner;
 
         emit OwnershipChange(prev, owner);
-        return true;
+        return(true);
     }
     //
     function AddContract(string calldata _name, address _address) public ownerOnly returns(bool){
@@ -130,7 +130,7 @@ contract Parent{
         addressToName[_address] = _name;
 
         emit ContractAddition(_name, _name, _address);
-        return true;
+        return(true);
     }
 
     function UpdateContract(string calldata _name, address _address) public ownerOnly returns(bool){
@@ -157,7 +157,7 @@ contract Parent{
         addressToName[_address] = _name;
 
         emit ContractUpdate(_name, _name, _address);
-        return true;
+        return(true);
     }
 
     function RemoveContract(string calldata _name) public ownerOnly returns(bool){
@@ -169,7 +169,7 @@ contract Parent{
         delete nameToAddress[_name];
 
         emit ContractRemoval(_name, _name);
-        return true;
+        return(true);
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS
