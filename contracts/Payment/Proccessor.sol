@@ -52,7 +52,7 @@ contract Proccessor{
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
-    address constant private parentAddress = 0x72ec1287FF5BB960fd54Ac2AdAE99145153C561F;
+    address constant private parentAddress = 0x477D7bd757c281419b69154Ac05116748cd6E6df;
     //
     address immutable private MATIC;
 

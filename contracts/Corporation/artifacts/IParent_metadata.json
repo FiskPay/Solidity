@@ -53,11 +53,11 @@
 	},
 	"sources": {
 		"contracts/Corporation/Vault.sol": {
-			"keccak256": "0xbfa54e5cff2c87133dfde5145ebbab53805c6fad10bff074f8d8e0952a6e52a6",
+			"keccak256": "0x44383af0f93d85491521cfaabb05258133d98980bb3158b1ab1566277d9917ad",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cdef30bb8d2946c0bfe92227c7fcb9850f031f95fd7a8ff304afe372ce3d9e49",
-				"dweb:/ipfs/QmXKogJfPUuayAQbopZu9oTPUtmkD3yrp5u5sjPcTChDtP"
+				"bzz-raw://e4f432724fd41a6af77e92018a8e20a6d24b4d3fc712ef836c856247fe26d866",
+				"dweb:/ipfs/QmP93msb9G6q9Xh9yXjM6VhQynjGRtbofRUwrx7PwS2pUk"
 			]
 		}
 	},
