@@ -1,1 +1,0 @@
-[{"inputs":[{"internalType":"string","name":"name","type":"string"}],"name":"GetAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}]
