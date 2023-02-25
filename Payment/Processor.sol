@@ -123,7 +123,7 @@ contract Processor{
             revert("Token not supported");
 
         if(tk.allowance(msg.sender, address(this)) < _amount)
-            revert("Proccessor not approved");
+            revert("Processor not approved");
 
         tk.transferFrom(msg.sender, address(this), _amount);
 
@@ -175,7 +175,7 @@ contract Processor{
              _transferToken(_symbol, _amount, _receiver, _implementor);
         }
         else
-            revert("Proccessing failed");
+            revert("Processing failed");
 
         reentrantLocked = false;
 
