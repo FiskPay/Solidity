@@ -4,6 +4,7 @@ pragma solidity 0.8.18;
 
 interface IParent{
 
+    function GetContractAddress(string calldata name) external view returns(address);
     function Owner() external view returns(address);
     function MATIC() external view returns(address);
 }
@@ -192,6 +193,12 @@ contract Currencies{
 
 //-----------------------------------------------------------------------// v DEFAULTS
 
-    receive() external payable{}
-    fallback() external payable{}
+    receive() external payable{
+
+        if(msg.value > 0)
+            payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : msg.value}("");
+        
+    }
+
+    fallback() external {}
 }

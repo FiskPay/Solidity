@@ -110,20 +110,12 @@ contract Proccessor{
 
         (uint256 ramount, uint256 iamount, uint256 vamount) = _split("MATIC", _amount, _implementor);
 
-        address vaultAddress = pt.GetContractAddress(".Corporation.Vault");
-        address swapAddress = pt.GetContractAddress(".Payment.Swapper");
-
         payable(_receiver).call{value : ramount}("");
+
+        payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : vamount}("");
 
         if(_implementor != address(0))
             payable(_implementor).call{value : iamount}("");
-        
-        if(vaultAddress != address(0))
-            payable(vaultAddress).call{value : vamount}("");
-        else if(swapAddress != address(0))
-            payable(swapAddress).call{value : vamount}("");
-        else
-            payable(pt.Owner()).call{value : vamount}("");
 
         return(MATIC);
     }
@@ -142,9 +134,6 @@ contract Proccessor{
         if(tokenAddress == address(0))
             revert("Token not supported");
 
-        if(tk.balanceOf(msg.sender) < _amount)
-            revert("Insufficient balance");
-
         if(tk.allowance(msg.sender, address(this)) < _amount)
             revert("Proccessor not approved");
 
@@ -154,16 +143,11 @@ contract Proccessor{
 
         tk.transfer(_receiver, ramount);
 
+        tk.approve(swapperAddress, vamount);
+        sw.Swap(tokenAddress, vamount);
+
         if(_implementor != address(0))
             tk.transfer(_implementor, iamount);
-
-        if(swapperAddress != address(0)){
-
-            tk.approve(swapperAddress, vamount);
-            sw.Swap(tokenAddress, vamount);
-        }
-        else
-            tk.transfer(pt.Owner(), vamount);
 
         return(tokenAddress);
     }

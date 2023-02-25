@@ -96,8 +96,6 @@ contract Swapper{
         if(pt.GetContractAddress(".Payment.Proccessor") != msg.sender)
             revert("Proccessor only");
 
-        address vaultAddress = pt.GetContractAddress(".Corporation.Vault");
-
         IERC20 tk = IERC20(_token);
 
         if(tk.allowance(msg.sender, address(this)) < _amount)
@@ -131,8 +129,8 @@ contract Swapper{
             catch{}
         }
 
-        if(vaultAddress != address(0) && address(this).balance > 0)
-            payable(vaultAddress).call{value : address(this).balance}("");
+        if(address(this).balance > 0)
+            payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : address(this).balance}("");
 
         return(true);
     }
@@ -171,5 +169,5 @@ contract Swapper{
 //-----------------------------------------------------------------------// v DEFAULTS
 
     receive() external payable{}
-    fallback() external payable{}
+    fallback() external{}
 }

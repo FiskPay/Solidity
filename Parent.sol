@@ -164,6 +164,11 @@ contract Parent{
 
 //-----------------------------------------------------------------------// v DEFAULTS
 
-    receive() external payable{}
-    fallback() external payable{}
+    receive() external payable{
+
+        if(msg.value > 0)
+            payable(address(nameToAddress[".Corporation.Vault"])).call{value : msg.value}(""); 
+    }
+    
+    fallback() external {}
 }
