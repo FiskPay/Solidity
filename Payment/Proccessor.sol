@@ -40,7 +40,7 @@ contract Proccessor{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Proccessed(address indexed _from, address indexed _receiver, address _currency, uint256 _amount);
+    event Proccessed(address indexed _sender, address indexed _receiver, address _currency, uint256 _amount);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
