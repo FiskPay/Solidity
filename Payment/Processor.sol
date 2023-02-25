@@ -5,8 +5,6 @@ pragma solidity 0.8.18;
 interface IParent{
 
     function GetContractAddress(string calldata _name) external view returns(address);
-    function Owner() external view returns(address);
-    function MATIC() external pure returns(address);
 }
 
 interface ICurrencies{
@@ -53,9 +51,6 @@ contract Proccessor{
 //-----------------------------------------------------------------------// v ADDRESSES
 
     address constant private parentAddress = 0x477D7bd757c281419b69154Ac05116748cd6E6df;
-    //
-    address immutable private MATIC;
-
 
 //-----------------------------------------------------------------------// v NUMBERS
 
@@ -74,11 +69,6 @@ contract Proccessor{
 //-----------------------------------------------------------------------// v MODIFIERS
 
 //-----------------------------------------------------------------------// v CONSTRUCTOR
-
-    constructor(){
-    
-        MATIC = pt.MATIC();
-    }
 
 //-----------------------------------------------------------------------// v PRIVATE FUNCTIONS
 
