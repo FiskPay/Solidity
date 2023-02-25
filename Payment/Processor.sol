@@ -40,7 +40,7 @@ contract Proccessor{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Processed(address indexed _sender, address indexed _receiver, address _currency, uint256 _amount);
+    event Processed(bytes32 _verification);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
@@ -106,7 +106,7 @@ contract Proccessor{
         vamount = _amount - (ramount + iamount);
     }
 
-    function _transferMATIC(uint256 _amount, address _receiver, address _implementor) private returns(address){
+    function _transferMATIC(uint256 _amount, address _receiver, address _implementor) private{
 
         (uint256 ramount, uint256 iamount, uint256 vamount) = _split("MATIC", _amount, _implementor);
 
@@ -116,11 +116,9 @@ contract Proccessor{
 
         if(_implementor != address(0))
             payable(_implementor).call{value : iamount}("");
-
-        return(MATIC);
     }
 
-    function _transferToken(string calldata _symbol, uint256 _amount, address _receiver, address _implementor) private returns(address){
+    function _transferToken(string calldata _symbol, uint256 _amount, address _receiver, address _implementor) private{
 
         address swapperAddress = pt.GetContractAddress(".Payment.Swapper");
         ISwapper sw = ISwapper(swapperAddress);
@@ -147,16 +145,14 @@ contract Proccessor{
         sw.Swap(tokenAddress, vamount);
 
         if(_implementor != address(0))
-            tk.transfer(_implementor, iamount);
-
-        return(tokenAddress);
+            tk.transfer(_implementor, iamount);  
     }
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
-    function Process(string calldata _symbol, uint256 _amount, address _receiver, address _implementor) public payable returns(bool){
+    function Process(string calldata _symbol, uint256 _amount, address _receiver, address _implementor, bytes32 _verification) public payable returns(bool){
 
         if(reentrantLocked == true)
             revert("Reentrance failed");
@@ -174,18 +170,26 @@ contract Proccessor{
         if(size != 0)
             revert("Implementor is contract");
 
-        address tokenAddress = address(0);
+        if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0){
 
-        if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0)
-            tokenAddress = _transferMATIC(msg.value, _receiver, _implementor);
-        else if(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked("MATIC")) && _amount > 0 && msg.value == 0)
-            tokenAddress = _transferToken(_symbol, _amount, _receiver, _implementor);
+            if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, msg.value)) != _verification)
+                revert("Verification failed");
+
+            _transferMATIC(msg.value, _receiver, _implementor);
+        }
+        else if(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked("MATIC")) && _amount > 0 && msg.value == 0){
+
+            if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, _amount)) != _verification)
+                revert("Verification failed");
+
+             _transferToken(_symbol, _amount, _receiver, _implementor);
+        }
         else
             revert("Proccessing failed");
 
         reentrantLocked = false;
 
-        emit Processed(msg.sender, _receiver, tokenAddress, _amount);
+        emit Processed(_verification);
         return(true);
     }
 
