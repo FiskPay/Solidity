@@ -5,8 +5,8 @@ pragma solidity 0.8.18;
 interface IParent{
 
     function GetContractAddress(string calldata _name) external view returns(address);
-    function GetOwner() external view returns(address);
-    function GetMATIC() external pure returns(address);
+    function Owner() external view returns(address);
+    function MATIC() external pure returns(address);
 }
 
 interface ICurrencies{
@@ -27,20 +27,20 @@ interface IERC20{
     function approve(address _spender, uint256 _value) external returns(bool);
     function allowance(address _owner, address _spender) external view returns(uint256);
     function balanceOf(address _owner) external view returns(uint256);
-    function transfer(address _receiver, uint256 _value) external returns (bool);
+    function transfer(address _receiver, uint256 _value) external returns(bool);
     function transferFrom(address _from, address _receiver, uint256 _value) external returns(bool);
 }
 
 interface ISwapper{
     
-    function Swap(address _receiverken, uint256 _amount) external returns(bool);
+    function Swap(address _receiver, uint256 _amount) external returns(bool);
 }
 
 contract Proccessor{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Proccessed(address indexed _sender, address indexed _receiver, address _currency, uint256 _amount);
+    event Processed(address indexed _sender, address indexed _receiver, address _currency, uint256 _amount);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
@@ -63,7 +63,7 @@ contract Proccessor{
 
 //-----------------------------------------------------------------------// v STRINGS
 
-    string constant public Name = ".Payment.Proccessor";
+    string constant public Name = ".Payment.Processor";
 
 //-----------------------------------------------------------------------// v STRUCTS
 
@@ -77,7 +77,7 @@ contract Proccessor{
 
     constructor(){
     
-        MATIC = pt.GetMATIC();
+        MATIC = pt.MATIC();
     }
 
 //-----------------------------------------------------------------------// v PRIVATE FUNCTIONS
@@ -123,7 +123,7 @@ contract Proccessor{
         else if(swapAddress != address(0))
             payable(swapAddress).call{value : vamount}("");
         else
-            payable(pt.GetOwner()).call{value : vamount}("");
+            payable(pt.Owner()).call{value : vamount}("");
 
         return(MATIC);
     }
@@ -163,7 +163,7 @@ contract Proccessor{
             sw.Swap(tokenAddress, vamount);
         }
         else
-            tk.transfer(pt.GetOwner(), vamount);
+            tk.transfer(pt.Owner(), vamount);
 
         return(tokenAddress);
     }
@@ -172,7 +172,7 @@ contract Proccessor{
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
-    function Proccess(string calldata _symbol, uint256 _amount, address _receiver, address _implementor) public payable returns(bool){
+    function Process(string calldata _symbol, uint256 _amount, address _receiver, address _implementor) public payable returns(bool){
 
         if(reentrantLocked == true)
             revert("Reentrance failed");
@@ -201,7 +201,7 @@ contract Proccessor{
 
         reentrantLocked = false;
 
-        emit Proccessed(msg.sender, _receiver, tokenAddress, _amount);
+        emit Processed(msg.sender, _receiver, tokenAddress, _amount);
         return(true);
     }
 

@@ -101,5 +101,5 @@ contract Clerk{
 //-----------------------------------------------------------------------// v DEFAULTS
 
     receive() external payable{}
-    fallback() external payable{}
+    fallback() external{}
 }

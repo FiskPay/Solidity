@@ -6,8 +6,8 @@ pragma abicoder v2;
 interface IParent{
 
     function GetContractAddress(string calldata _name) external view returns(address);
-    function GetOwner() external view returns(address);
-    function GetWMATIC() external view returns(address);
+    function Owner() external view returns(address);
+    function WMATIC() external view returns(address);
 }
 
 interface ISwapRouter{
@@ -82,7 +82,7 @@ contract Swapper{
 //-----------------------------------------------------------------------// v CONSTRUCTOR
     constructor(){
     
-        WMATIC = pt.GetWMATIC();
+        WMATIC = pt.WMATIC();
         wm = IWMATIC(WMATIC);
     }
 //-----------------------------------------------------------------------// v PRIVATE FUNCTIONS
@@ -139,7 +139,7 @@ contract Swapper{
     
     function WithdrawToken(address _token) public returns(bool) {
 
-        if(pt.GetOwner() != msg.sender)
+        if(pt.Owner() != msg.sender)
             revert("Owner only");
 
         if(IERC20(_token).balanceOf(address(this)) > 0)
@@ -152,7 +152,7 @@ contract Swapper{
 
     function WithdrawMATIC() public returns(bool) {
 
-        if(pt.GetOwner() != msg.sender)
+        if(pt.Owner() != msg.sender)
             revert("Owner only");
 
         if(address(this).balance > 0){

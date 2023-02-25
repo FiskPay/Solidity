@@ -5,7 +5,7 @@ pragma solidity 0.8.18;
 interface IParent{
 
 	function GetContractAddress(string calldata _name) external view returns(address);
-    function GetOwner() external view returns(address);
+    function Owner() external view returns(address);
 }
 
 interface IOracle{
@@ -23,7 +23,7 @@ contract Employees{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event PayoffSent(address indexed _employee, uint256 _amount);
+    event Payout(address indexed _employee, uint256 _amount);
     //
     event EmployeeAddition(address indexed _employee, uint256 _dailyWage);
     event EmployeeUpdate(address indexed _employee, uint256 _dailyWage);
@@ -68,7 +68,7 @@ contract Employees{
 
     modifier ownerOnly{
 
-        if(pt.GetOwner() != msg.sender)
+        if(pt.Owner() != msg.sender)
             revert("Owner only");
 
         _;
@@ -95,7 +95,7 @@ contract Employees{
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
-    function EmployeePayoff() public returns(bool){
+    function Payoff() public returns(bool){
 
         if(reentrantLocked == true)
             revert("Reentrance failed");
@@ -143,7 +143,7 @@ contract Employees{
 
         reentrantLocked = false;
 
-        emit PayoffSent(msg.sender, amount);
+        emit Payout(msg.sender, amount);
         return(true);
     }
     //

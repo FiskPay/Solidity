@@ -4,8 +4,8 @@ pragma solidity 0.8.18;
 
 interface IParent{
 
-    function GetOwner() external view returns(address);
-    function GetMATIC() external view returns(address);
+    function Owner() external view returns(address);
+    function MATIC() external view returns(address);
 }
 
 interface IERC20{
@@ -60,7 +60,7 @@ contract Currencies{
 
     modifier ownerOnly{
 
-        if(pt.GetOwner() != msg.sender)
+        if(pt.Owner() != msg.sender)
             revert("Owner only");
 
         _;
@@ -70,8 +70,8 @@ contract Currencies{
 
     constructor(){
     
-        MATIC = pt.GetMATIC();
-        currencyFee[MATIC] = 200;
+        MATIC = pt.MATIC();
+        currencyFee[MATIC] = 490;
     }
 
 //-----------------------------------------------------------------------// v PRIVATE FUNCTIONS
@@ -127,11 +127,11 @@ contract Currencies{
 
         symbolToAddress[_symbol] = _address;
         addressToSymbol[_address] = _symbol;
-        currencyFee[_address] = 220;
+        currencyFee[_address] = 390;
 
         currencies.push(_symbol);
 
-        emit CurrencyAddition(tokenAddress);
+        emit CurrencyAddition(_address);
         return(true);
     }
 

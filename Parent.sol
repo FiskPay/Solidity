@@ -25,8 +25,8 @@ contract Parent{
     address private owner = msg.sender;
     address private newOwner = msg.sender;
     //
-    address constant private MATIC = 0x0000000000000000000000000000000000001010;
-    address constant private WMATIC = 0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889;
+    address constant public MATIC = 0x0000000000000000000000000000000000001010;
+    address constant public WMATIC = 0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889;
 
 //-----------------------------------------------------------------------// v NUMBERS
 
@@ -60,7 +60,7 @@ contract Parent{
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
-    function GetOwner() public view returns(address){
+    function Owner() public view returns(address){
 
         return owner;
     }
@@ -73,16 +73,6 @@ contract Parent{
     function GetContractName(address _address) public view returns(string memory){
 
         return addressToName[_address];
-    }
-    //
-    function GetMATIC() public pure returns(address){
-
-        return MATIC;
-    }
-
-    function GetWMATIC() public pure returns(address){
-
-        return WMATIC;
     }
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
