@@ -34,7 +34,7 @@ interface ISwapper{
     function Swap(address _receiver, uint256 _amount) external returns(bool);
 }
 
-contract Proccessor{
+contract Processor{
 
 //-----------------------------------------------------------------------// v EVENTS
 
