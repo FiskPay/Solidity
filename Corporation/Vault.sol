@@ -11,8 +11,8 @@ contract Vault{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event VaultWithdraw(uint256 _amount);
-    event Deposit(address indexed _from, uint256 _amount);
+    event VaultWithdraw(uint256 amount);
+    event Deposit(address indexed from, uint256 amount);
 
 //-----------------------------------------------------------------------// v INTERFACES
 

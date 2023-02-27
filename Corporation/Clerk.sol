@@ -16,7 +16,7 @@ contract Clerk{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event ClerkWithdraw(address indexed _orderer, address indexed _receiver, uint256 _amount);
+    event ClerkWithdraw(address indexed orderer, address indexed receiver, uint256 amount);
 
 //-----------------------------------------------------------------------// v INTERFACES
 

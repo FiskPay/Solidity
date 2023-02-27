@@ -11,11 +11,11 @@ contract Parent{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event OwnershipChange(address indexed _from, address indexed _to);
+    event OwnershipChange(address indexed oldOwner, address indexed newOwner);
     //
-    event ContractAddition(string indexed _nameHash, string _name, address _address);
-    event ContractUpdate(string indexed _nameHash, string _name, address _address);
-    event ContractRemoval(string indexed _nameHash, string _name);
+    event ContractAddition(string indexed contractHash, string contractName, address contactAddress);
+    event ContractUpdate(string indexed contractHash, string contractName, address contactAddress);
+    event ContractRemoval(string indexed contractHash, string contractName);
 
 //-----------------------------------------------------------------------// v INTERFACES
 

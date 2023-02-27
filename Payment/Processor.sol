@@ -38,7 +38,7 @@ contract Processor{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Processed(bytes32 _verification);
+    event Processed(bytes32 verification, uint32 timestamp);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
@@ -142,7 +142,7 @@ contract Processor{
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
-    function Process(string calldata _symbol, uint256 _amount, address _receiver, address _implementor, bytes32 _verification) public payable returns(bool){
+    function Process(string calldata _symbol, uint256 _amount, address _receiver, address _implementor, bytes32 _verification, uint32 _timestamp) public payable returns(bool){
 
         if(reentrantLocked == true)
             revert("Reentrance failed");
@@ -179,7 +179,7 @@ contract Processor{
 
         reentrantLocked = false;
 
-        emit Processed(_verification);
+        emit Processed(_verification, _timestamp);
         return(true);
     }
 

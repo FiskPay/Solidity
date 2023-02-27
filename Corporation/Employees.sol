@@ -23,11 +23,11 @@ contract Employees{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Payout(address indexed _employee, uint256 _amount);
+    event Payout(address indexed employee, uint256 _amount);
     //
-    event EmployeeAddition(address indexed _employee, uint256 _dailyWage);
-    event EmployeeUpdate(address indexed _employee, uint256 _dailyWage);
-    event EmployeeRemoval(address indexed _employee);
+    event EmployeeAddition(address indexed employee, uint256 dailyWage);
+    event EmployeeUpdate(address indexed employee, uint256 dailyWage);
+    event EmployeeRemoval(address indexed employee);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
