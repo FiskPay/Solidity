@@ -162,14 +162,14 @@ contract Processor{
 
         if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0){
 
-            if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, msg.value)) != _verification)
+            if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, msg.value, _timestamp)) != _verification)
                 revert("Verification failed");
 
             _transferMATIC(msg.value, _receiver, _implementor);
         }
         else if(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked("MATIC")) && _amount > 0 && msg.value == 0){
 
-            if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, _amount)) != _verification)
+            if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, _amount, _timestamp)) != _verification)
                 revert("Verification failed");
 
              _transferToken(_symbol, _amount, _receiver, _implementor);
