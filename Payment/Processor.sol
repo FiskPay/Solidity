@@ -149,6 +149,9 @@ contract Processor{
 
         reentrantLocked = true;
 
+        if(pt.GetContractAddress(".Payment.Processor") != address(this))
+            revert("Deprecated Processor");
+
         uint32 size;
         assembly{size := extcodesize(_receiver)}
 
