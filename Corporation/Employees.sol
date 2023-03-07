@@ -127,6 +127,9 @@ contract Employees{
         uint32 moduloDays = uint32((block.timestamp - employee.lastPayment) % (1 days));
         uint256 amount = uint256(employee.dailyWage * unpaidDays * (10 ** 18) * (10 ** decimals) / (price * 100));
 
+        if(amount == 0)
+            revert("Already paid");
+
         if(employee.isActive == true)
             employee.lastPayment = uint32(block.timestamp - moduloDays);
         else{
@@ -134,9 +137,6 @@ contract Employees{
             employee.lastPayment = 0;
             employee.dailyWage = 0;
         }
-
-        if(amount == 0)
-            revert("Already paid");
 
         try cl.EmployeesWithdraw(msg.sender, amount){}
         catch{ revert("Payoff failed"); }
