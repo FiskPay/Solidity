@@ -57,7 +57,7 @@ contract Swapper{
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
-    address constant private parentAddress = 0x477D7bd757c281419b69154Ac05116748cd6E6df;
+    address constant private parentAddress = 0xA00A1ED23A4cC11182db678a67FcdfB45fEe1FF8;
     //
     address constant private routerAddress = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
     //

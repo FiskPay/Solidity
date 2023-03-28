@@ -26,7 +26,7 @@ contract Parent{
     address private newOwner = msg.sender;
     //
     address constant public MATIC = 0x0000000000000000000000000000000000001010;
-    address constant public WMATIC = 0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889;
+    address constant public WMATIC = 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
 
 //-----------------------------------------------------------------------// v NUMBERS
 
