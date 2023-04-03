@@ -30,7 +30,7 @@ contract Subscribers{
     //
     uint32 private transactionsPerPeriod = 50;
     uint32 private daysPerPeriod = 30;
-    uint256 private minimumAmount = 1 * (10**18);
+    uint256 private minimumAmount = 5 * (10**17);
 
 
 //-----------------------------------------------------------------------// v BYTES
