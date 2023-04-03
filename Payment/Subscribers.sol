@@ -170,7 +170,7 @@ contract Subscribers{
         return true;
     }
     //
-    function SetSubscriptionCostPerDay(uint32 _amount) public ownerOnly returns(bool){
+    function SetSubscriptionCostPerDay(uint256 _amount) public ownerOnly returns(bool){
 
         if(_amount == 0)
             revert("Zero amount");
@@ -210,7 +210,7 @@ contract Subscribers{
         return (true);
     }
 
-    function SetMinimumAmount(uint _amount) public ownerOnly returns(bool){
+    function SetMinimumAmount(uint256 _amount) public ownerOnly returns(bool){
 
         if(_amount == 0)
             revert("Zero amount");
