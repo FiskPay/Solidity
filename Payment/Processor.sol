@@ -42,7 +42,7 @@ contract Processor{
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
-    address constant private parentAddress = 0xA00A1ED23A4cC11182db678a67FcdfB45fEe1FF8;
+    address constant private parentAddress = 0x70C01604d020dBE3ec7aA77BAc1f2c8A8386598D;
 
 //-----------------------------------------------------------------------// v NUMBERS
 
