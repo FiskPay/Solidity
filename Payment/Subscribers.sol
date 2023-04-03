@@ -12,6 +12,8 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v EVENTS
 
+    event Subscribed(address subscriber, uint32 dayNumber);
+
 //-----------------------------------------------------------------------// v INTERFACES
 
     IParent constant private pt = IParent(parentAddress);
@@ -167,6 +169,7 @@ contract Subscribers{
 
         payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : address(this).balance}("");
 
+        emit Subscribed(sender, _days);
         return true;
     }
     //
