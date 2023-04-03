@@ -26,13 +26,13 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v NUMBERS
 
-    uint256 private subscriptionCostPerDay = 1 * (10**17);
+    uint256 private subscriptionCostPerDay = 2 * (10**17);
     //
     uint32 private subscriptionsToReward = 5;
     //
     uint32 private transactionsPerPeriod = 50;
     uint32 private daysPerPeriod = 30;
-    uint256 private minimumAmount = 25 * (10**16);
+    uint256 private minimumAmount = 2 * (10**17);
 
 
 //-----------------------------------------------------------------------// v BYTES
