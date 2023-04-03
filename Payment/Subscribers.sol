@@ -20,7 +20,7 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
-    address constant private parentAddress = 0x70C01604d020dBE3ec7aA77BAc1f2c8A8386598D;
+    address constant private parentAddress = 0xA00A1ED23A4cC11182db678a67FcdfB45fEe1FF8;
 
 //-----------------------------------------------------------------------// v NUMBERS
 
@@ -28,8 +28,8 @@ contract Subscribers{
     //
     uint32 private subscriptionsToReward = 5;
     //
-    uint32 private transactionsPerPeriod = 5; //50;
-    uint32 private daysPerPeriod = 1; //30;
+    uint32 private transactionsPerPeriod = 50;
+    uint32 private daysPerPeriod = 30;
     uint256 private minimumAmount = 1 * (10**18);
 
 
@@ -142,11 +142,11 @@ contract Subscribers{
         uint32 tnow = uint32(block.timestamp);
 
         if(subscribedUntil <= tnow)
-            subscribedUntil = tnow + (_days * 1 days);
+            subscribedUntil = tnow + uint32(_days * 1 days);
         else
-            subscribedUntil += (_days * 1 days);
+            subscribedUntil += uint32(_days * 1 days);
 
-        if(subscribedUntil > (tnow + 365 days))
+        if(subscribedUntil > uint32(tnow + 365 days))
             revert("Total subscription can not exceed 365 day");
 
         subscriber.subscribedUntil = subscribedUntil;
@@ -219,8 +219,8 @@ contract Subscribers{
     //
     function AllowProcessing(address _subscriber, uint256 _amount) public returns (bool){
 
-        if(pt.GetContractAddress(".Payment.Proccessor") != msg.sender)
-            revert("Proccessor only");
+        if(pt.GetContractAddress(".Payment.Processor") != msg.sender)
+            revert("Processor only");
 
         Subscriber storage subscriber = subscribers[_subscriber];
 
@@ -228,7 +228,7 @@ contract Subscribers{
 
         if(tnow <= subscriber.subscribedUntil || tnow > subscriber.nextPeriod){
 
-            subscriber.nextPeriod = tnow + (daysPerPeriod * 1 days);
+            subscriber.nextPeriod = tnow + uint32(daysPerPeriod * 1 days);
             subscriber.transactionCount = 0;
         }
         

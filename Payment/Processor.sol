@@ -42,7 +42,7 @@ contract Processor{
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
-    address constant private parentAddress = 0x70C01604d020dBE3ec7aA77BAc1f2c8A8386598D;
+    address constant private parentAddress = 0xA00A1ED23A4cC11182db678a67FcdfB45fEe1FF8;
 
 //-----------------------------------------------------------------------// v NUMBERS
 
@@ -100,19 +100,19 @@ contract Processor{
         if(pt.GetContractAddress(".Payment.Processor") != address(this))
             revert("Deprecated Processor");
 
-        address subscribersAddress = pt.GetContractAddress(".Payment.Subscribers");
-        ISubscribers sb = ISubscribers(subscribersAddress);
-
-        if(sb.AllowProcessing(_receiver, _amount) != true)
-            revert("Receiver limited");
-
         uint32 size;
         assembly{size := extcodesize(_receiver)}
 
         if(size != 0)
             revert("Receiver is contract");
 
+        address subscribersAddress = pt.GetContractAddress(".Payment.Subscribers");
+        ISubscribers sb = ISubscribers(subscribersAddress);
+
         if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0){
+
+            if(sb.AllowProcessing(_receiver, msg.value) != true)
+                revert("Receiver limited");
 
             if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, msg.value, _timestamp)) != _verification)
                 revert("Verification failed");
@@ -120,6 +120,9 @@ contract Processor{
             _transferMATIC(msg.value, _receiver);
         }
         else if(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked("MATIC")) && _amount > 0 && msg.value == 0){
+
+            if(sb.AllowProcessing(_receiver, 0) != true)
+                revert("Receiver limited");
 
             if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, _amount, _timestamp)) != _verification)
                 revert("Verification failed");
