@@ -232,7 +232,12 @@ contract Subscribers{
 
         uint32 tnow = uint32(block.timestamp);
 
-        if(tnow <= subscriber.subscribedUntil || tnow > subscriber.nextPeriod){
+        if(tnow <= subscriber.subscribedUntil){
+
+            subscriber.nextPeriod = subscriber.subscribedUntil + uint32(daysPerPeriod * 1 days);
+            subscriber.transactionCount = 0;
+        }
+        else if(tnow > subscriber.nextPeriod){
 
             subscriber.nextPeriod = tnow + uint32(daysPerPeriod * 1 days);
             subscriber.transactionCount = 0;
