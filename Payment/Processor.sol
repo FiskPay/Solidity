@@ -4,28 +4,26 @@ pragma solidity 0.8.18;
 
 interface IParent{
 
-    function GetContractAddress(string calldata _name) external view returns(address);
+    function GetContractAddress(string calldata name) external view returns(address);
 }
 
 interface ICurrencies{
 
-    function GetCurrencyAddress(string calldata _symbol) external view returns(address);
-    function GetCurrencySymbol(address _address) external view returns(string memory);
-    function GetTokenFee(string calldata _symbol) external view returns(uint24);
-    function GetMATICFee() external view returns(uint24);
+    function GetCurrencyAddress(string calldata symbol) external view returns(address);
+    function GetCurrencySymbol(address addr) external view returns(string memory);
 }
 
 interface ISubscribers{
 
-
+    function AllowProcessing(address subscriber, uint amount) external returns (bool);
 }
 
 interface IERC20{
 
-    function approve(address _spender, uint256 _value) external returns(bool);
-    function allowance(address _owner, address _spender) external view returns(uint256);
-    function balanceOf(address _owner) external view returns(uint256);
-    function transferFrom(address _from, address _receiver, uint256 _value) external returns(bool);
+    function approve(address spender, uint256 value) external returns(bool);
+    function allowance(address owner, address spender) external view returns(uint256);
+    function balanceOf(address owner) external view returns(uint256);
+    function transferFrom(address from, address receiver, uint256 value) external returns(bool);
 }
 
 contract Processor{
@@ -105,8 +103,8 @@ contract Processor{
         address subscribersAddress = pt.GetContractAddress(".Payment.Subscribers");
         ISubscribers sb = ISubscribers(subscribersAddress);
 
-        if(sb.CanProcess(_receiver) != true)
-            revert("Reveiver limited");
+        if(sb.AllowProcessing(_receiver, _amount) != true)
+            revert("Receiver limited");
 
         uint32 size;
         assembly{size := extcodesize(_receiver)}

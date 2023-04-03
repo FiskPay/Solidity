@@ -9,7 +9,7 @@ interface IParent{
 
 interface IVault{
 
-    function ClerkWithdraw(uint256 _amount) external returns(bool);
+    function ClerkWithdraw(uint256 amount) external returns(bool);
 }
 
 contract Clerk{

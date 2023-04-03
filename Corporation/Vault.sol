@@ -90,6 +90,7 @@ contract Vault{
     receive() external payable{
 
         totalMATIC += msg.value;
+        
         emit Deposit(msg.sender, msg.value);
     }
 

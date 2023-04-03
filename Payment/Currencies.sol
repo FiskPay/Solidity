@@ -20,8 +20,6 @@ contract Currencies{
 
     event CurrencyAddition(address indexed _currency);
     event CurrencyRemoval(address indexed _currency);
-    //
-    event UpdateFee(address indexed _currency, uint24 _fee);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
@@ -47,15 +45,12 @@ contract Currencies{
 
 //-----------------------------------------------------------------------// v STRUCTS
 
-
 //-----------------------------------------------------------------------// v ENUMS
 
 //-----------------------------------------------------------------------// v MAPPINGS
 
     mapping(string => address) private symbolToAddress;
     mapping(address => string) private addressToSymbol;
-    //
-    mapping(address => uint24) private currencyFee;
 
 //-----------------------------------------------------------------------// v MODIFIERS
 
@@ -72,7 +67,6 @@ contract Currencies{
     constructor(){
     
         MATIC = pt.MATIC();
-        currencyFee[MATIC] = 490;
     }
 
 //-----------------------------------------------------------------------// v PRIVATE FUNCTIONS
@@ -84,19 +78,9 @@ contract Currencies{
         return symbolToAddress[_symbol];
     }
 
-    function GetCurrencySymbol(address _address) public view returns(string memory){
+    function GetCurrencySymbol(address _addr) public view returns(string memory){
 
-        return addressToSymbol[_address];
-    }
-    //
-    function GetTokenFee(string calldata _symbol) public view returns(uint24){
-
-        return currencyFee[symbolToAddress[_symbol]];
-    }
-
-    function GetMATICFee() public view returns(uint24){
-
-        return currencyFee[MATIC];
+        return addressToSymbol[_addr];
     }
     //
     function GetCurrencyList() public view returns(string[] memory){
@@ -106,33 +90,32 @@ contract Currencies{
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
-    function AddCurrency(string calldata _symbol, address _address) public ownerOnly returns(bool){
+    function AddCurrency(string calldata _symbol, address _addr) public ownerOnly returns(bool){
 
         address tokenAddress = symbolToAddress[_symbol];
 
         if(tokenAddress != address(0))
             revert("Symbol already used");
-        else if(keccak256(abi.encodePacked(addressToSymbol[_address])) != keccak256(abi.encodePacked("")))
+        else if(keccak256(abi.encodePacked(addressToSymbol[_addr])) != keccak256(abi.encodePacked("")))
             revert("Address already used");
 
         uint32 size;
-        assembly{size := extcodesize(_address)}
+        assembly{size := extcodesize(_addr)}
 
         if(size == 0)
             revert("Not a contract");
 
-        string memory sb = IERC20(_address).symbol();
+        string memory sb = IERC20(_addr).symbol();
 
         if(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked(sb)))
             revert("Symbol mismatch");
 
-        symbolToAddress[_symbol] = _address;
-        addressToSymbol[_address] = _symbol;
-        currencyFee[_address] = 390;
+        symbolToAddress[_symbol] = _addr;
+        addressToSymbol[_addr] = _symbol;
 
         currencies.push(_symbol);
 
-        emit CurrencyAddition(_address);
+        emit CurrencyAddition(_addr);
         return(true);
     }
 
@@ -145,7 +128,6 @@ contract Currencies{
         
         delete addressToSymbol[tokenAddress];
         delete symbolToAddress[_symbol];
-        delete currencyFee[tokenAddress];
 
         uint256 lng = currencies.length;
 
@@ -161,33 +143,6 @@ contract Currencies{
         currencies.pop();
 
         emit CurrencyRemoval(tokenAddress);
-        return(true);
-    }
-    //
-    function UpdateTokenFee(string calldata _symbol, uint24 _fee) public ownerOnly returns(bool){
-
-        address tokenAddress = symbolToAddress[_symbol];
-
-        if(tokenAddress == address(0))
-            revert("Symbol not used");
-            
-        if(_fee > 10000)
-            revert("Exceeded maximum fee");
-
-        currencyFee[tokenAddress] = _fee;
-
-        emit UpdateFee(tokenAddress, _fee);
-        return(true);
-    }
-
-    function UpdateMATICFee(uint24 _fee) public ownerOnly returns(bool){
-
-        if(_fee > 10000)
-            revert("Exceeded maximum fee");
-
-        currencyFee[MATIC] = _fee;
-
-        emit UpdateFee(MATIC, _fee);
         return(true);
     }
 
