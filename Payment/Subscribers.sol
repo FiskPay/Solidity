@@ -152,7 +152,7 @@ contract Subscribers{
             subscribedUntil += uint32(_days * 1 days);
 
         if(subscribedUntil > uint32(tnow + 365 days))
-            revert("Total subscription can not exceed 365 day");
+            revert("Total subscription can not exceed 365 days");
 
         subscriber.subscribedUntil = subscribedUntil;
 
