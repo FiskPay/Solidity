@@ -235,8 +235,9 @@ contract Subscribers{
             subscriber.transactionCount = 0;
         }
         
-        if(tnow > subscriber.subscribedUntil && (subscriber.transactionCount >= transactionsPerPeriod || _amount <  minimumAmount))
-            return(false);
+        if(tnow > subscriber.subscribedUntil)
+            if(subscriber.transactionCount >= transactionsPerPeriod || _amount <  minimumAmount)
+                return(false);
 
         subscriber.transactionCount++;
         subscriber.lastTransaction = tnow;
