@@ -24,7 +24,7 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v NUMBERS
 
-    uint256 private subscriptionCostPerDay = 2 * (10**17);
+    uint256 private subscriptionCostPerDay = 1 * (10**17);
     //
     uint32 private subscriptionsToReward = 5;
     //
