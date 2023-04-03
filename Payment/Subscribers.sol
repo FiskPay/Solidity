@@ -20,6 +20,8 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v BOOLEANS
 
+    bool allowSubscriptions = true;
+
 //-----------------------------------------------------------------------// v ADDRESSES
 
     address constant private parentAddress = 0xA00A1ED23A4cC11182db678a67FcdfB45fEe1FF8;
@@ -30,8 +32,8 @@ contract Subscribers{
     //
     uint32 private subscriptionsToReward = 5;
     //
-    uint32 private transactionsPerPeriod = 50;
-    uint32 private daysPerPeriod = 30;
+    uint32 private transactionsPerSeason = 50;
+    uint32 private daysPerSeason = 30;
     uint256 private minimumAmount = 2 * (10**17);
 
 
@@ -47,7 +49,7 @@ contract Subscribers{
 
         address referredBy;
         uint32 transactionCount;
-        uint32 nextPeriod;
+        uint32 nextSeason;
         uint32 subscribedUntil;
         uint32 lastTransaction;  
     }
@@ -75,15 +77,26 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
-    function SubscriberProfile(address _subscriber) public view returns (address referredBy, uint32 transactionCount, uint32 nextPeriod, uint32 subscribedUntil, uint32 lastTransaction){
+    
+    function GetAllowSubscriptions() public view returns(bool){
+
+        return (allowSubscriptions);
+    }
+    //
+    function SubscriberProfile(address _subscriber) public view returns (address referredBy, uint32 transactionCount, uint32 nextSeason, uint32 subscribedUntil, uint32 subscribtionDaysLeft, bool isSubscriber, uint32 lastTransaction){
     
         Subscriber memory subscriber = subscribers[_subscriber];
 
         referredBy = subscriber.referredBy;
         transactionCount = subscriber.transactionCount;
-        nextPeriod = subscriber.nextPeriod;
+        nextSeason = subscriber.nextSeason;
         subscribedUntil = subscriber.subscribedUntil;
         lastTransaction = subscriber.lastTransaction;
+
+        uint32 tnow = uint32(block.timestamp);
+
+        subscribtionDaysLeft = (subscribedUntil >= tnow) ? ((subscribedUntil - tnow) / 1 days) : 0;
+        isSubscriber =  (subscribedUntil >= tnow) ? true : false;
     }
     //
     function GetSubscriptionCostPerDay() public view returns(uint256){
@@ -96,14 +109,14 @@ contract Subscribers{
         return (subscriptionsToReward);
     }
    //
-    function GetTransactionsPerPeriod() public view returns(uint32){
+    function GetTransactionsPerSeason() public view returns(uint32){
 
-        return (transactionsPerPeriod);
+        return (transactionsPerSeason);
     }
 
-    function GetDaysPerPeriod() public view returns(uint32){
+    function GetDaysPerSeason() public view returns(uint32){
 
-        return (daysPerPeriod);
+        return (daysPerSeason);
     }
 
     function GetMinimumAmount() public view returns(uint256){
@@ -113,7 +126,23 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
+    function SetAllowSubscriptions(bool _allow) public ownerOnly returns(bool){
+
+        if(allowSubscriptions == _allow)
+            if(_allow == true)
+                revert("Already allowed");
+            else
+                revert("Already disallowed");
+
+        allowSubscriptions = _allow;
+
+        return (true);
+    }
+    //
     function Subscribe(uint32 _days, address _referrer) payable public returns(bool){
+
+        if(allowSubscriptions != true)
+            revert("Subscribing disabled");
 
         uint32 size;
         address sender = msg.sender;
@@ -137,8 +166,8 @@ contract Subscribers{
             if(size != 0)
                 revert("Referrer is contract");
 
-            if(_days < 10)
-                revert("First subscription should be at least 10 days");
+            if(_days < 15)
+                revert("First subscription should be at least 15 days");
 
             referrerSubscriptions[_referrer]++;
             subscriber.referredBy = _referrer;
@@ -146,14 +175,18 @@ contract Subscribers{
 
         uint32 tnow = uint32(block.timestamp);
 
-        if(subscribedUntil <= tnow)
+        if(tnow > subscribedUntil){
+            
             subscribedUntil = tnow + uint32(_days * 1 days);
+            subscriber.transactionCount = 0;
+        }
         else
             subscribedUntil += uint32(_days * 1 days);
 
-        if(subscribedUntil > uint32(tnow + 365 days))
-            revert("Total subscription can not exceed 365 days");
+        if(subscribedUntil > uint32(tnow + 120 days))
+            revert("Total subscription can not exceed 120 days");
 
+        subscriber.nextSeason = subscribedUntil + uint32(daysPerSeason * 1 days);
         subscriber.subscribedUntil = subscribedUntil;
 
         if(subscriber.referredBy != address(0)){
@@ -193,22 +226,22 @@ contract Subscribers{
         return (true);
     }
     //
-    function SetTransactionsPerPeriod(uint32 _transactions) public ownerOnly returns(bool){
+    function SetTransactionsPerSeason(uint32 _transactions) public ownerOnly returns(bool){
 
         if(_transactions == 0)
             revert("Zero transactions");
 
-        transactionsPerPeriod = _transactions;
+        transactionsPerSeason = _transactions;
 
         return (true);
     }
 
-    function SetDaysPerPeriod(uint32 _days) public ownerOnly returns(bool){
+    function SetDaysPerSeason(uint32 _days) public ownerOnly returns(bool){
 
         if(_days == 0)
             revert("Zero days");
 
-        daysPerPeriod = _days;
+        daysPerSeason = _days;
 
         return (true);
     }
@@ -232,20 +265,19 @@ contract Subscribers{
 
         uint32 tnow = uint32(block.timestamp);
 
-        if(tnow <= subscriber.subscribedUntil){
+        if(tnow <= subscriber.subscribedUntil)
+            subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
+        else if(tnow > subscriber.subscribedUntil){
 
-            subscriber.nextPeriod = subscriber.subscribedUntil + uint32(daysPerPeriod * 1 days);
-            subscriber.transactionCount = 0;
-        }
-        else if(tnow > subscriber.nextPeriod){
+            if(tnow > subscriber.nextSeason){
 
-            subscriber.nextPeriod = tnow + uint32(daysPerPeriod * 1 days);
-            subscriber.transactionCount = 0;
-        }
-        
-        if(tnow > subscriber.subscribedUntil)
-            if(subscriber.transactionCount >= transactionsPerPeriod || _amount <  minimumAmount)
+                subscriber.nextSeason = tnow + uint32(daysPerSeason * 1 days);
+                subscriber.transactionCount = 0;
+            }
+
+            if(subscriber.transactionCount >= transactionsPerSeason || _amount <  minimumAmount)
                 return(false);
+        }
 
         subscriber.transactionCount++;
         subscriber.lastTransaction = tnow;
