@@ -170,9 +170,6 @@ contract Subscribers{
             if(size != 0)
                 revert("Referrer is contract");
 
-            if(_days < 15)
-                revert("First subscription should be at least 15 days");
-
             referrerSubscriptions[_referrer]++;
             subscriber.referredBy = _referrer;
         }
