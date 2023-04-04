@@ -182,7 +182,7 @@ contract Subscribers{
         if(tnow > subscribedUntil){
             
             subscribedUntil = tnow + uint32(_days * 1 days);
-            subscriber.transactionCount = 0;
+            delete subscriber.transactionCount;
         }
         else
             subscribedUntil += uint32(_days * 1 days);
@@ -276,7 +276,7 @@ contract Subscribers{
             if(tnow > subscriber.nextSeason){
 
                 subscriber.nextSeason = tnow + uint32(daysPerSeason * 1 days);
-                subscriber.transactionCount = 0;
+                delete subscriber.transactionCount;
             }
 
             if(subscriber.transactionCount >= transactionsPerSeason || _amount == 0)
