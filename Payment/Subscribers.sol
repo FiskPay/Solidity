@@ -163,17 +163,22 @@ contract Subscribers{
 
         uint32 subscribedUntil = subscriber.subscribedUntil;
 
-        if(subAddr != _referrer && _referrer != address(0) && subscriber.lastTransaction == 0 && subscribedUntil == 0){
+        if(subscriber.lastTransaction == 0 && subscribedUntil == 0){
 
-           assembly{size := extcodesize(_referrer)}
+            if(subAddr != _referrer && _referrer != address(0)){
 
-            if(size != 0)
-                revert("Referrer is contract");
+                assembly{size := extcodesize(_referrer)}
 
-            referrerSubscriptions[_referrer]++;
-            subscriber.referredBy = _referrer;
+                if(size != 0)
+                    revert("Referrer is contract");
+
+                referrerSubscriptions[_referrer]++;
+                subscriber.referredBy = _referrer;
+            }
+
+            if(_days < 15)
+                revert("First subscription should be at least 15 days");
         }
-
         uint32 tnow = uint32(block.timestamp);
 
         if(tnow > subscribedUntil){
