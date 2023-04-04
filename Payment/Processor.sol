@@ -112,7 +112,7 @@ contract Processor{
         if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0){
 
             if(sb.AllowProcessing(_receiver, msg.value) != true)
-                revert("Transactions limit reached");
+                revert("Transaction limit reached");
 
             if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, msg.value, _timestamp)) != _verification)
                 revert("Verification failed");
