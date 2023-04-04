@@ -20,7 +20,7 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v BOOLEANS
 
-    bool allowSubscriptions = true;
+    bool allowSubscribing = true;
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
@@ -77,10 +77,14 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
-    
-    function GetAllowSubscriptions() public view returns(bool){
+    function GetReferrerSubscriptions(address _referrer) public view returns(uint32){
 
-        return (allowSubscriptions);
+        return (referrerSubscriptions[_referrer]);
+    }
+    //
+    function GetAllowSubscribing() public view returns(bool){
+
+        return (allowSubscribing);
     }
     //
     function SubscriberProfile(address _subscriber) public view returns (address referredBy, uint32 transactionCount, uint32 nextSeason, uint32 subscribedUntil, uint32 subscribtionDaysLeft, bool isSubscriber, uint32 lastTransaction){
@@ -126,28 +130,28 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
-    function SetAllowSubscriptions(bool _allow) public ownerOnly returns(bool){
+    function SetAllowSubscribing(bool _allow) public ownerOnly returns(bool){
 
-        if(allowSubscriptions == _allow)
+        if(allowSubscribing == _allow)
             if(_allow == true)
                 revert("Already allowed");
             else
                 revert("Already disallowed");
 
-        allowSubscriptions = _allow;
+        allowSubscribing = _allow;
 
         return (true);
     }
     //
     function Subscribe(uint32 _days, address _referrer) payable public returns(bool){
 
-        if(allowSubscriptions != true)
+        if(allowSubscribing != true)
             revert("Subscribing disabled");
 
         uint32 size;
-        address sender = msg.sender;
+        address subAddr = msg.sender;
 
-        assembly{size := extcodesize(sender)}
+        assembly{size := extcodesize(subAddr)}
 
         if(size != 0)
             revert("Contracts can not subscribe");
@@ -155,11 +159,11 @@ contract Subscribers{
         if(_days * subscriptionCostPerDay != msg.value)
             revert("Wrong MATIC amount");
 
-        Subscriber storage subscriber = subscribers[sender];
+        Subscriber storage subscriber = subscribers[subAddr];
 
         uint32 subscribedUntil = subscriber.subscribedUntil;
 
-        if(subscriber.lastTransaction == 0 && subscribedUntil == 0){
+        if(subAddr != _referrer && _referrer != address(0) && subscriber.lastTransaction == 0 && subscribedUntil == 0){
 
            assembly{size := extcodesize(_referrer)}
 
@@ -194,7 +198,7 @@ contract Subscribers{
             uint256 subscriberReward = msg.value * 10 / 100;
             uint256 referrerReward = (msg.value - subscriberReward) / 100;
 
-            payable(sender).call{value : subscriberReward}("");
+            payable(subAddr).call{value : subscriberReward}("");
             
             if(referrerSubscriptions[subscriber.referredBy] >= subscriptionsToReward)
                 payable(subscriber.referredBy).call{value : referrerReward}("");
@@ -202,7 +206,7 @@ contract Subscribers{
 
         payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : address(this).balance}("");
 
-        emit Subscribed(sender, _days);
+        emit Subscribed(subAddr, _days);
         return true;
     }
     //
