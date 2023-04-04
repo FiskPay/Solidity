@@ -112,7 +112,7 @@ contract Processor{
         if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0){
 
             if(sb.AllowProcessing(_receiver, msg.value) != true)
-                revert("Receiver limited");
+                revert("Transactions limit reached");
 
             if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, msg.value, _timestamp)) != _verification)
                 revert("Verification failed");
@@ -122,7 +122,7 @@ contract Processor{
         else if(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked("MATIC")) && _amount > 0 && msg.value == 0){
 
             if(sb.AllowProcessing(_receiver, 0) != true)
-                revert("Receiver limited");
+                revert("Subscriber service only");
 
             if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, _amount, _timestamp)) != _verification)
                 revert("Verification failed");

@@ -34,7 +34,7 @@ contract Subscribers{
     //
     uint32 private transactionsPerSeason = 50;
     uint32 private daysPerSeason = 30;
-    uint256 private minimumAmount = 2 * (10**17);
+    uint256 private minimumToCount = 5 * (10**17);
 
 
 //-----------------------------------------------------------------------// v BYTES
@@ -123,9 +123,9 @@ contract Subscribers{
         return (daysPerSeason);
     }
 
-    function GetMinimumAmount() public view returns(uint256){
+    function GetMinimumToCount() public view returns(uint256){
 
-        return (minimumAmount);
+        return (minimumToCount);
     }
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
@@ -250,12 +250,12 @@ contract Subscribers{
         return (true);
     }
 
-    function SetMinimumAmount(uint256 _amount) public ownerOnly returns(bool){
+    function SetMinimumToCount(uint256 _amount) public ownerOnly returns(bool){
 
         if(_amount == 0)
             revert("Zero amount");
 
-        minimumAmount = _amount;
+        minimumToCount = _amount;
 
         return (true);
     }
@@ -279,11 +279,13 @@ contract Subscribers{
                 subscriber.transactionCount = 0;
             }
 
-            if(subscriber.transactionCount >= transactionsPerSeason || _amount <  minimumAmount)
+            if(subscriber.transactionCount >= transactionsPerSeason || _amount == 0)
                 return(false);
         }
 
-        subscriber.transactionCount++;
+        if(_amount >= minimumToCount)
+            subscriber.transactionCount++;
+
         subscriber.lastTransaction = tnow;
 
         return(true);
