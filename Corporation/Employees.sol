@@ -55,7 +55,8 @@ contract Employees{
 
         bool isEmployee;
         uint16 dailyWage;
-        uint32 lastPayout;  
+        uint32 lastPayout;
+        uint32 releasedAt; 
     }
 
 //-----------------------------------------------------------------------// v ENUMS
@@ -120,19 +121,22 @@ contract Employees{
         if(price <= 0)
             revert("Unaccepted Oracle price");
 
-        uint32 unpaidDays = uint32((block.timestamp - employee.lastPayout) / (1 days));
-        uint32 moduloDays = uint32((block.timestamp - employee.lastPayout) % (1 days));
+        uint32 payUntil = (employee.isEmployee == true) ? uint32(block.timestamp) : employee.releasedAt;
+
+        uint32 unpaidDays = uint32((payUntil - employee.lastPayout) / (1 days));
+        uint32 moduloDays = uint32((payUntil - employee.lastPayout) % (1 days));
         uint256 amount = uint256(unpaidDays * employee.dailyWage * 10**(decimals + 18) / (price * 100));
 
         if(amount == 0)
             revert("Already paid");
 
         if(employee.isEmployee == true)
-            employee.lastPayout = uint32(block.timestamp - moduloDays);
+            employee.lastPayout = payUntil - moduloDays;
         else{
 
             delete employee.lastPayout;
             delete employee.dailyWage;
+            delete employee.releasedAt;
         }
 
         try cl.EmployeesWithdraw(msg.sender, amount){}
@@ -192,6 +196,7 @@ contract Employees{
             revert("Not an employee");
 
         employee.isEmployee = false;
+        employee.releasedAt = uint32(block.timestamp);
 
         emit EmployeeRemoval( _employee);
         return(true);
