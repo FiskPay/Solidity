@@ -121,7 +121,7 @@ contract Employees{
         uint256 price = oc.GetMATICPrice();
 
         if(price <= 0)
-            revert("Unaccepted price");
+            revert("Unaccepted Oracle price");
 
         uint32 unpaidDays = uint32((block.timestamp - employee.lastPayment) / (1 days));
         uint32 moduloDays = uint32((block.timestamp - employee.lastPayment) % (1 days));

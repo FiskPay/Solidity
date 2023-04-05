@@ -8,6 +8,12 @@ interface IParent{
     function Owner() external view returns(address);
 }
 
+interface IOracle{
+
+    function GetMATICPrice() external view returns(uint256);
+    function GetMATICDecimals() external view returns(uint8, bool);
+}
+
 contract Subscribers{
 
 //-----------------------------------------------------------------------// v EVENTS
@@ -28,13 +34,13 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v NUMBERS
 
-    uint256 private subscriptionCostPerDay = 2 * (10**17);
+    uint16 private subscriptionCostPerDay = 30;
     //
     uint32 private subscriptionsToReward = 5;
     //
     uint32 private transactionsPerSeason = 50;
     uint32 private daysPerSeason = 30;
-    uint256 private minimumToCount = 5 * (10**17);
+    uint16 private minimumUSDToCount = 50;
 
 
 //-----------------------------------------------------------------------// v BYTES
@@ -103,7 +109,7 @@ contract Subscribers{
         isSubscriber =  (subscribedUntil >= tnow) ? true : false;
     }
     //
-    function GetSubscriptionCostPerDay() public view returns(uint256){
+    function GetSubscriptionCostPerDay() public view returns(uint16){
 
         return (subscriptionCostPerDay);
     }
@@ -123,9 +129,9 @@ contract Subscribers{
         return (daysPerSeason);
     }
 
-    function GetMinimumToCount() public view returns(uint256){
+    function GetMinimumUSDToCount() public view returns(uint256){
 
-        return (minimumToCount);
+        return (minimumUSDToCount);
     }
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
@@ -156,8 +162,23 @@ contract Subscribers{
         if(size != 0)
             revert("Contracts can not subscribe");
 
-        if(_days * subscriptionCostPerDay != msg.value)
-            revert("Wrong MATIC amount");
+        address oracleAddress = pt.GetContractAddress(".Corporation.Oracle");
+        IOracle oc = IOracle(oracleAddress);
+
+        (uint8 decimals, bool success) = oc.GetMATICDecimals();
+
+        if(success != true)
+            revert("Oracle unreachable");
+
+        uint256 price = oc.GetMATICPrice();
+
+        if(price <= 0)
+            revert("Unaccepted Oracle price");
+
+        uint16 usdAmount = uint16(100 * price * msg.value / decimals / 10**18);
+
+        if(_days * subscriptionCostPerDay < usdAmount)
+            revert("MATIC amount insufficient");
 
         Subscriber storage subscriber = subscribers[subAddr];
 
@@ -179,6 +200,7 @@ contract Subscribers{
             if(_days < 15)
                 revert("First subscription should be at least 15 days");
         }
+        
         uint32 tnow = uint32(block.timestamp);
 
         if(tnow > subscribedUntil){
@@ -195,16 +217,19 @@ contract Subscribers{
         subscriber.nextSeason = subscribedUntil + uint32(daysPerSeason * 1 days);
         subscriber.subscribedUntil = subscribedUntil;
 
+        uint256 trueAmount = _days * subscriptionCostPerDay * 10**18 * decimals / price / 100; 
+        uint256 subscriberAmount = msg.value - trueAmount;
+
         if(subscriber.referredBy != address(0)){
 
-            uint256 subscriberReward = msg.value * 10 / 100;
-            uint256 referrerReward = (msg.value - subscriberReward) / 100;
-
-            payable(subAddr).call{value : subscriberReward}("");
+            subscriberAmount += trueAmount / 10;
             
             if(referrerSubscriptions[subscriber.referredBy] >= subscriptionsToReward)
-                payable(subscriber.referredBy).call{value : referrerReward}("");
+                payable(subscriber.referredBy).call{value : ((msg.value - subscriberAmount) / 100)}("");
         }
+
+        if(subscriberAmount > 0)
+            payable(subAddr).call{value : (subscriberAmount)}("");
 
         payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : address(this).balance}("");
 
@@ -212,12 +237,12 @@ contract Subscribers{
         return true;
     }
     //
-    function SetSubscriptionCostPerDay(uint256 _amount) public ownerOnly returns(bool){
+    function SetSubscriptionCostPerDay(uint16 _usd) public ownerOnly returns(bool){
 
-        if(_amount == 0)
-            revert("Zero amount");
+        if(_usd == 0)
+            revert("Zero USD");
 
-        subscriptionCostPerDay = _amount;
+        subscriptionCostPerDay = _usd;
 
         return (true);
     }
@@ -252,12 +277,12 @@ contract Subscribers{
         return (true);
     }
 
-    function SetMinimumToCount(uint256 _amount) public ownerOnly returns(bool){
+    function SetMinimumUSDToCount(uint16 _usd) public ownerOnly returns(bool){
 
-        if(_amount == 0)
-            revert("Zero amount");
+        if(_usd == 0)
+            revert("Zero USD");
 
-        minimumToCount = _amount;
+        minimumUSDToCount = _usd;
 
         return (true);
     }
@@ -271,8 +296,11 @@ contract Subscribers{
 
         uint32 tnow = uint32(block.timestamp);
 
-        if(tnow <= subscriber.subscribedUntil)
+        if(tnow <= subscriber.subscribedUntil){
+
             subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
+            subscriber.transactionCount++;
+        }
         else if(tnow > subscriber.subscribedUntil){
 
             if(tnow > subscriber.nextSeason){
@@ -283,10 +311,25 @@ contract Subscribers{
 
             if(subscriber.transactionCount >= transactionsPerSeason || _amount == 0)
                 return(false);
-        }
 
-        if(_amount >= minimumToCount)
-            subscriber.transactionCount++;
+            address oracleAddress = pt.GetContractAddress(".Corporation.Oracle");
+            IOracle oc = IOracle(oracleAddress);
+
+            (uint8 decimals, bool success) = oc.GetMATICDecimals();
+
+            if(success != true)
+                revert("Oracle unreachable");
+
+            uint256 price = oc.GetMATICPrice();
+
+            if(price <= 0)
+                revert("Unaccepted Oracle price");
+
+            uint16 usdAmount = uint16(100 * price * _amount / decimals / 10**18);
+
+            if(usdAmount >= minimumUSDToCount)
+                subscriber.transactionCount++;
+        }
 
         subscriber.lastTransaction = tnow;
 
