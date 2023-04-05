@@ -121,30 +121,46 @@ contract Employees{
         if(price <= 0)
             revert("Unaccepted Oracle price");
 
-        uint32 payUntil = (employee.isEmployee == true) ? (uint32(block.timestamp)) : (employee.releasedAt);
+        if(employee.isEmployee == true){
 
-        uint32 unpaidDays = uint32((payUntil - employee.lastPayout) / (1 days));
-        uint32 moduloDays = uint32((payUntil - employee.lastPayout) % (1 days));
-        uint256 amount = uint256(unpaidDays * employee.dailyWage * 10**(decimals + 18) / (price * 100));
+            uint32 payUntil = uint32(block.timestamp);
+            uint32 unpaidDays = uint32((payUntil - employee.lastPayout) / (1 days));
+            uint32 moduloDays = uint32((payUntil - employee.lastPayout) % (1 days));
+            uint256 amount = uint256(unpaidDays * employee.dailyWage * 10**(decimals + 18) / (price * 100));
 
-        if(amount == 0)
-            revert("Already paid");
-
-        if(employee.isEmployee == true)
             employee.lastPayout = payUntil - moduloDays;
+
+            if(amount == 0)
+                revert("Already paid");
+            else{
+
+                try cl.EmployeesWithdraw(msg.sender, amount){}
+                catch{ revert("Payoff failed"); }
+
+                emit Payout(msg.sender, amount);
+            }
+        }
         else{
 
-            delete employee.lastPayout;
-            delete employee.dailyWage;
-            delete employee.releasedAt;
-        }
+            uint32 payUntil = employee.releasedAt;
+            uint32 unpaidDays = uint32((payUntil - employee.lastPayout) / (1 days));
+            uint256 amount = uint256(unpaidDays * employee.dailyWage * 10**(decimals + 18) / (price * 100));
 
-        try cl.EmployeesWithdraw(msg.sender, amount){}
-        catch{ revert("Payoff failed"); }
+            delete employee.dailyWage;
+            delete employee.lastPayout;
+            delete employee.releasedAt;
+
+            if(amount > 0){
+
+                try cl.EmployeesWithdraw(msg.sender, amount){}
+                catch{ revert("Payoff failed"); }
+
+                emit Payout(msg.sender, amount);
+            }
+        }
 
         reentrantLocked = false;
 
-        emit Payout(msg.sender, amount);
         return(true);
     }
     //
@@ -167,9 +183,9 @@ contract Employees{
         if(_dailyWage == 0)
             revert("Zero wage");
 
+        employee.isEmployee = true;
         employee.dailyWage = _dailyWage;
         employee.lastPayout = uint32(block.timestamp);
-        employee.isEmployee = true;
 
         emit EmployeeAddition(_employee,  _dailyWage);
         return(true);
