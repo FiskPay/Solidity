@@ -4,7 +4,7 @@ pragma solidity 0.8.18;
 
 interface IParent{
 
-	function GetContractAddress(string calldata _name) external view returns(address);
+	function GetContractAddress(string calldata name) external view returns(address);
     function Owner() external view returns(address);
 }
 
