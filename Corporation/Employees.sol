@@ -16,14 +16,14 @@ interface IOracle{
 
 interface IClerk{
     
-    function EmployeesWithdraw(address _employee, uint256 _amount) external returns(bool);
+    function EmployeesWithdraw(address employee, uint256 amount) external returns(bool);
 }
 
 contract Employees{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Payout(address indexed employee, uint256 _amount);
+    event Payout(address indexed employee, uint256 amount);
     //
     event EmployeeAddition(address indexed employee, uint256 dailyWage);
     event EmployeeUpdate(address indexed employee, uint256 dailyWage);
