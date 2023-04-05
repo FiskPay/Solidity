@@ -125,7 +125,7 @@ contract Employees{
 
         uint32 unpaidDays = uint32((block.timestamp - employee.lastPayment) / (1 days));
         uint32 moduloDays = uint32((block.timestamp - employee.lastPayment) % (1 days));
-        uint256 amount = uint256(employee.dailyWage * unpaidDays * (10 ** 18) * (10 ** decimals) / (price * 100));
+        uint256 amount = uint256(unpaidDays * employee.dailyWage * 10**(decimals + 18) / (price * 100));
 
         if(amount == 0)
             revert("Already paid");
