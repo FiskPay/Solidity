@@ -81,7 +81,7 @@ contract Employees{
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
-    function GetEmployeeProfile(address _employee) public view returns(uint16 dailyWage, uint32 lastPayout, uint32 daysUnpaid, bool isEmployee){
+    function EmployeeProfile(address _employee) public view returns(uint16 dailyWage, uint32 lastPayout, uint32 daysUnpaid, bool isEmployee){
 
         Employee memory employee = employees[_employee];
 
