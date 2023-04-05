@@ -53,9 +53,9 @@ contract Employees{
 
     struct Employee{
 
-        bool isActive;
+        bool isEmployee;
         uint16 dailyWage;
-        uint32 lastPayment;  
+        uint32 lastPayout;  
     }
 
 //-----------------------------------------------------------------------// v ENUMS
@@ -80,17 +80,14 @@ contract Employees{
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
-    function GetEmployeeDailyWage(address _employee) public view returns(uint16){
+    function GetEmployeeProfile(address _employee) public view returns(uint16 dailyWage, uint32 lastPayout, uint32 daysUnpaid, bool isEmployee){
 
-        return(employees[_employee].dailyWage);
-    }
+        Employee memory employee = employees[_employee];
 
-    function GetEmployeeStatus(address _employee) public view returns(bool){
-
-        if(employees[_employee].isActive == true)
-            return(true);
-
-        return(false);
+        dailyWage = employee.dailyWage;
+        daysUnpaid = (uint32(block.timestamp) - employees[_employee].lastPayout) / (1 days);
+        lastPayout = employee.lastPayout;
+        isEmployee = employee.isEmployee;
     }
 
 //-----------------------------------------------------------------------// v SET FUNTIONS
@@ -110,7 +107,7 @@ contract Employees{
 
         Employee storage employee = employees[msg.sender];
         
-        if(employee.lastPayment == 0)
+        if(employee.lastPayout == 0)
             revert("Employee only");
 
         (uint8 decimals, bool success) = oc.GetMATICDecimals();
@@ -123,19 +120,19 @@ contract Employees{
         if(price <= 0)
             revert("Unaccepted Oracle price");
 
-        uint32 unpaidDays = uint32((block.timestamp - employee.lastPayment) / (1 days));
-        uint32 moduloDays = uint32((block.timestamp - employee.lastPayment) % (1 days));
+        uint32 unpaidDays = uint32((block.timestamp - employee.lastPayout) / (1 days));
+        uint32 moduloDays = uint32((block.timestamp - employee.lastPayout) % (1 days));
         uint256 amount = uint256(unpaidDays * employee.dailyWage * 10**(decimals + 18) / (price * 100));
 
         if(amount == 0)
             revert("Already paid");
 
-        if(employee.isActive == true)
-            employee.lastPayment = uint32(block.timestamp - moduloDays);
+        if(employee.isEmployee == true)
+            employee.lastPayout = uint32(block.timestamp - moduloDays);
         else{
 
-            employee.lastPayment = 0;
-            employee.dailyWage = 0;
+            delete employee.lastPayout;
+            delete employee.dailyWage;
         }
 
         try cl.EmployeesWithdraw(msg.sender, amount){}
@@ -151,7 +148,7 @@ contract Employees{
 
         Employee storage employee = employees[_employee];
 
-        if(employee.isActive == true)
+        if(employee.isEmployee == true)
             revert("Already employeed");
 
         uint32 size;
@@ -164,8 +161,8 @@ contract Employees{
             revert("Zero wage");
 
         employee.dailyWage = _dailyWage;
-        employee.lastPayment = uint32(block.timestamp);
-        employee.isActive = true;
+        employee.lastPayout = uint32(block.timestamp);
+        employee.isEmployee = true;
 
         emit EmployeeAddition(_employee,  _dailyWage);
         return(true);
@@ -175,7 +172,7 @@ contract Employees{
 
         Employee storage employee = employees[_employee];
 
-        if(employee.isActive != true)
+        if(employee.isEmployee != true)
             revert("Not an employee");
 
         if(_dailyWage == 0)
@@ -191,10 +188,10 @@ contract Employees{
 
         Employee storage employee = employees[_employee];
 
-        if(employee.isActive != true)
+        if(employee.isEmployee != true)
             revert("Not an employee");
 
-        employee.isActive = false;
+        employee.isEmployee = false;
 
         emit EmployeeRemoval( _employee);
         return(true);
