@@ -34,7 +34,7 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v NUMBERS
 
-    uint16 private subscriptionCostPerDay = 30;
+    uint16 private subscriptionCostPerDay = 33;
     //
     uint32 private subscriptionsToReward = 5;
     //
@@ -80,6 +80,31 @@ contract Subscribers{
 //-----------------------------------------------------------------------// v CONSTRUCTOR
 
 //-----------------------------------------------------------------------// v INTERNAL FUNCTIONS
+
+    function _getMATICPrice() private view returns (uint8, uint256){
+
+        address oracleAddress = pt.GetContractAddress(".Corporation.Oracle");
+        IOracle oc = IOracle(oracleAddress);
+
+        (uint8 decimals, bool success) = oc.GetMATICDecimals();
+
+        if(success != true)
+            revert("Oracle unreachable");
+
+        uint256 price = oc.GetMATICPrice();
+
+        if(price <= 0)
+            revert("Unaccepted Oracle price");
+
+        return(decimals, price);
+    }
+    //
+    function _trueAmount(uint16 _days,uint8 _decimals, uint256 _price) private view returns(uint256){
+
+        uint256 amount = uint256( _days * subscriptionCostPerDay * 10**(_decimals + 18) / (_price * 100));
+
+        return (amount); 
+    }
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
@@ -129,7 +154,7 @@ contract Subscribers{
         return (daysPerSeason);
     }
 
-    function GetMinimumUSDToCount() public view returns(uint256){
+    function GetMinimumUSDToCount() public view returns(uint16){
 
         return (minimumUSDToCount);
     }
@@ -149,11 +174,14 @@ contract Subscribers{
         return (true);
     }
     //
-    function Subscribe(uint32 _days, address _referrer) payable public returns(bool){
+    function Subscribe(uint16 _days, address _referrer) payable public returns(bool){
 
         if(allowSubscribing != true)
             revert("Subscribing disabled");
 
+        if(msg.value == 0)
+            revert("MATIC amount is zero");
+            
         uint32 size;
         address subAddr = msg.sender;
 
@@ -162,22 +190,10 @@ contract Subscribers{
         if(size != 0)
             revert("Contracts can not subscribe");
 
-        address oracleAddress = pt.GetContractAddress(".Corporation.Oracle");
-        IOracle oc = IOracle(oracleAddress);
+        (uint8 decimals, uint256 price) = _getMATICPrice();
+        uint32 usdAmount = uint32(price * 100 * msg.value / (10**(decimals + 18)));
 
-        (uint8 decimals, bool success) = oc.GetMATICDecimals();
-
-        if(success != true)
-            revert("Oracle unreachable");
-
-        uint256 price = oc.GetMATICPrice();
-
-        if(price <= 0)
-            revert("Unaccepted Oracle price");
-
-        uint16 usdAmount = uint16(100 * price * msg.value / decimals / 10**18);
-
-        if(_days * subscriptionCostPerDay < usdAmount)
+        if(uint32(_days * subscriptionCostPerDay) > usdAmount)
             revert("MATIC amount insufficient");
 
         Subscriber storage subscriber = subscribers[subAddr];
@@ -217,7 +233,7 @@ contract Subscribers{
         subscriber.nextSeason = subscribedUntil + uint32(daysPerSeason * 1 days);
         subscriber.subscribedUntil = subscribedUntil;
 
-        uint256 trueAmount = _days * subscriptionCostPerDay * 10**18 * decimals / price / 100; 
+        uint256 trueAmount = _trueAmount(_days, decimals, price); 
         uint256 subscriberAmount = msg.value - trueAmount;
 
         if(subscriber.referredBy != address(0)){
@@ -267,7 +283,7 @@ contract Subscribers{
         return (true);
     }
 
-    function SetDaysPerSeason(uint32 _days) public ownerOnly returns(bool){
+    function SetDaysPerSeason(uint16 _days) public ownerOnly returns(bool){
 
         if(_days == 0)
             revert("Zero days");
@@ -300,6 +316,9 @@ contract Subscribers{
 
             subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
             subscriber.transactionCount++;
+            subscriber.lastTransaction = tnow;
+
+            return(true);
         }
         else if(tnow > subscriber.subscribedUntil){
 
@@ -312,28 +331,18 @@ contract Subscribers{
             if(subscriber.transactionCount >= transactionsPerSeason || _amount == 0)
                 return(false);
 
-            address oracleAddress = pt.GetContractAddress(".Corporation.Oracle");
-            IOracle oc = IOracle(oracleAddress);
+            (uint8 decimals, uint256 price) = _getMATICPrice();
+            uint32 usdAmount = uint32(price * 100 * _amount / (10**(decimals + 18)));
 
-            (uint8 decimals, bool success) = oc.GetMATICDecimals();
-
-            if(success != true)
-                revert("Oracle unreachable");
-
-            uint256 price = oc.GetMATICPrice();
-
-            if(price <= 0)
-                revert("Unaccepted Oracle price");
-
-            uint16 usdAmount = uint16(100 * price * _amount / decimals / 10**18);
-
-            if(usdAmount >= minimumUSDToCount)
+            if(usdAmount >= uint32(minimumUSDToCount))
                 subscriber.transactionCount++;
+
+            subscriber.lastTransaction = tnow;
+            
+            return(true);
         }
 
-        subscriber.lastTransaction = tnow;
-
-        return(true);
+        return(false);
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS
@@ -342,7 +351,6 @@ contract Subscribers{
 
         if(msg.value > 0)
             payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : msg.value}("");
-        
     }
 
     fallback() external {}
