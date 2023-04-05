@@ -121,7 +121,7 @@ contract Employees{
         if(price <= 0)
             revert("Unaccepted Oracle price");
 
-        uint32 payUntil = (employee.isEmployee == true) ? uint32(block.timestamp) : employee.releasedAt;
+        uint32 payUntil = (employee.isEmployee == true) ? (uint32(block.timestamp)) : (employee.releasedAt);
 
         uint32 unpaidDays = uint32((payUntil - employee.lastPayout) / (1 days));
         uint32 moduloDays = uint32((payUntil - employee.lastPayout) % (1 days));
