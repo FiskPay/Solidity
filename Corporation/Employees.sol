@@ -155,6 +155,9 @@ contract Employees{
         if(employee.isEmployee == true)
             revert("Already employeed");
 
+        if(employee.releasedAt > 0)
+            revert("Payoff pending");
+
         uint32 size;
         assembly{size := extcodesize(_employee)}
 
