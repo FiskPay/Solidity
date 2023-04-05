@@ -55,7 +55,7 @@ contract Employees{
 
         bool isEmployee;
         uint16 dailyWage;
-        uint32 lastPayout;
+        uint32 lastPayoff;
         uint32 releasedAt; 
     }
 
@@ -81,13 +81,13 @@ contract Employees{
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
-    function EmployeeProfile(address _employee) public view returns(uint16 dailyWage, uint32 lastPayout, uint32 daysUnpaid, bool isEmployee){
+    function EmployeeProfile(address _employee) public view returns(uint16 dailyWage, uint32 daysUnpaid, uint32 lastPayoff, bool isEmployee){
 
         Employee memory employee = employees[_employee];
 
         dailyWage = employee.dailyWage;
-        daysUnpaid = (uint32(block.timestamp) - employees[_employee].lastPayout) / (1 days);
-        lastPayout = employee.lastPayout;
+        daysUnpaid = (employees[_employee].lastPayoff > 0) ? ((uint32(block.timestamp) - employees[_employee].lastPayoff) / (1 days)) : 0;
+        lastPayoff = employee.lastPayoff;
         isEmployee = employee.isEmployee;
     }
 
@@ -108,7 +108,7 @@ contract Employees{
 
         Employee storage employee = employees[msg.sender];
         
-        if(employee.lastPayout == 0)
+        if(employee.lastPayoff == 0)
             revert("Employee only");
 
         (uint8 decimals, bool success) = oc.GetMATICDecimals();
@@ -124,11 +124,11 @@ contract Employees{
         if(employee.isEmployee == true){
 
             uint32 payUntil = uint32(block.timestamp);
-            uint32 unpaidDays = uint32((payUntil - employee.lastPayout) / (1 days));
-            uint32 moduloDays = uint32((payUntil - employee.lastPayout) % (1 days));
+            uint32 unpaidDays = uint32((payUntil - employee.lastPayoff) / (1 days));
+            uint32 moduloDays = uint32((payUntil - employee.lastPayoff) % (1 days));
             uint256 amount = uint256(unpaidDays * employee.dailyWage * 10**(decimals + 18) / (price * 100));
 
-            employee.lastPayout = payUntil - moduloDays;
+            employee.lastPayoff = payUntil - moduloDays;
 
             if(amount == 0)
                 revert("Already paid");
@@ -143,11 +143,11 @@ contract Employees{
         else{
 
             uint32 payUntil = employee.releasedAt;
-            uint32 unpaidDays = uint32((payUntil - employee.lastPayout) / (1 days));
+            uint32 unpaidDays = uint32((payUntil - employee.lastPayoff) / (1 days));
             uint256 amount = uint256(unpaidDays * employee.dailyWage * 10**(decimals + 18) / (price * 100));
 
             delete employee.dailyWage;
-            delete employee.lastPayout;
+            delete employee.lastPayoff;
             delete employee.releasedAt;
 
             if(amount > 0){
@@ -185,7 +185,7 @@ contract Employees{
 
         employee.isEmployee = true;
         employee.dailyWage = _dailyWage;
-        employee.lastPayout = uint32(block.timestamp);
+        employee.lastPayoff = uint32(block.timestamp);
 
         emit EmployeeAddition(_employee,  _dailyWage);
         return(true);
