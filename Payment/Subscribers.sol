@@ -41,6 +41,9 @@ contract Subscribers{
     uint32 private transactionsPerSeason = 50;
     uint32 private daysPerSeason = 30;
     uint16 private minimumUSDToCount = 50;
+    //
+    uint256 private maticPrice = 0;
+    uint8 private maticDecimals = 0;
 
 
 //-----------------------------------------------------------------------// v BYTES
@@ -81,29 +84,37 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v INTERNAL FUNCTIONS
 
-    function _getMATICPrice() private view returns (uint8, uint256){
+    function _renewMATICPrice() private returns (bool){
 
-        address oracleAddress = pt.GetContractAddress(".Corporation.Oracle");
-        IOracle oc = IOracle(oracleAddress);
+        IOracle oc = IOracle(pt.GetContractAddress(".Corporation.Oracle"));
 
         (uint8 decimals, bool success) = oc.GetMATICDecimals();
-
-        if(success != true)
-            revert("Oracle unreachable");
-
         uint256 price = oc.GetMATICPrice();
 
-        if(price <= 0)
-            revert("Unaccepted Oracle price");
+        if(success == true && price > 0)
+        {
 
-        return(decimals, price);
+            maticPrice = price;
+            maticDecimals = decimals;
+
+            return(true);
+        }
+
+        return(false);
     }
     //
-    function _trueAmount(uint16 _days,uint8 _decimals, uint256 _price) private view returns(uint256){
+    function _trueAmount(uint16 _days) private view returns(uint256){
 
-        uint256 amount = uint256( _days * subscriptionCostPerDay * 10**(_decimals + 18) / (_price * 100));
+        uint256 trueAmount = uint256( _days * subscriptionCostPerDay * 10**(maticDecimals + 18) / (maticPrice * 100));
 
-        return (amount); 
+        return (trueAmount); 
+    }
+
+    function _usdAmount(uint256 _amount) private view returns(uint32){
+
+        uint32 usdAmount = uint32(maticPrice * 100 * _amount / (10**(maticDecimals + 18)));
+
+        return (usdAmount); 
     }
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
@@ -190,8 +201,10 @@ contract Subscribers{
         if(size != 0)
             revert("Contracts can not subscribe");
 
-        (uint8 decimals, uint256 price) = _getMATICPrice();
-        uint32 usdAmount = uint32(price * 100 * msg.value / (10**(decimals + 18)));
+        if(_renewMATICPrice() != true)
+            revert("MATIC to USD Oracle unavailable");
+
+        uint32 usdAmount = _usdAmount(msg.value);
 
         if(uint32(_days * subscriptionCostPerDay) > usdAmount)
             revert("MATIC amount insufficient");
@@ -233,7 +246,7 @@ contract Subscribers{
         subscriber.nextSeason = subscribedUntil + uint32(daysPerSeason * 1 days);
         subscriber.subscribedUntil = subscribedUntil;
 
-        uint256 trueAmount = _trueAmount(_days, decimals, price); 
+        uint256 trueAmount = _trueAmount(_days); 
         uint256 subscriberAmount = msg.value - trueAmount;
 
         if(subscriber.referredBy != address(0)){
@@ -247,7 +260,7 @@ contract Subscribers{
         if(subscriberAmount > 0)
             payable(subAddr).call{value : (subscriberAmount)}("");
 
-        payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : address(this).balance}("");
+        payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : (address(this).balance)}("");
 
         emit Subscribed(subAddr, _days);
         return true;
@@ -331,8 +344,8 @@ contract Subscribers{
             if(subscriber.transactionCount >= transactionsPerSeason || _amount == 0)
                 return(false);
 
-            (uint8 decimals, uint256 price) = _getMATICPrice();
-            uint32 usdAmount = uint32(price * 100 * _amount / (10**(decimals + 18)));
+            _renewMATICPrice();
+            uint32 usdAmount = _usdAmount(_amount);
 
             if(usdAmount >= uint32(minimumUSDToCount))
                 subscriber.transactionCount++;
