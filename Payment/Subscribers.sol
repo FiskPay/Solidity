@@ -93,8 +93,7 @@ contract Subscribers{
         (uint8 decimals, bool success) = oc.GetMATICDecimals();
         uint256 price = oc.GetMATICPrice();
 
-        if(success == true && price > 0)
-        {
+        if(success == true && price > 0){
 
             maticPrice = price;
             maticDecimals = decimals;
