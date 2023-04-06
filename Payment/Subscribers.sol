@@ -261,9 +261,7 @@ contract Subscribers{
         if(_renewMATICPrice() != true)
             revert("MATIC to USD Oracle unavailable");
 
-        uint32 usdAmount = _usdAmount(msg.value);
-
-        if(uint32(_days * subscriptionCostPerDay) > usdAmount)
+        if(uint32(_days * subscriptionCostPerDay) > _usdAmount(msg.value))
             revert("MATIC amount insufficient");
 
         Subscriber storage subscriber = subscribers[subAddr];
@@ -305,7 +303,7 @@ contract Subscribers{
 
         if(subscriber.referredBy != address(0)){
 
-            subscriberAmount += trueAmount / 10;
+            subscriberAmount += (trueAmount / 10);
             
             if(referrerSubscriptions[subscriber.referredBy] >= subscriptionsToReward)
                 payable(subscriber.referredBy).call{value : ((msg.value - subscriberAmount) / 100)}("");
@@ -399,9 +397,8 @@ contract Subscribers{
                 return(false);
 
             _renewMATICPrice();
-            uint32 usdAmount = _usdAmount(_amount);
 
-            if(usdAmount >= uint32(minimumUSDToCount))
+            if(_usdAmount(_amount) >= uint32(minimumUSDToCount))
                 subscriber.transactionCount++;
 
             subscriber.lastTransaction = tnow;
