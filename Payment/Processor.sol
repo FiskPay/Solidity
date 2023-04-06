@@ -15,7 +15,7 @@ interface ICurrencies{
 
 interface ISubscribers{
 
-    function AllowProcessing(address subscriber, uint amount) external returns (bool);
+    function AllowProcessing(address subscriber, uint256 amount) external returns (bool);
 }
 
 interface IERC20{
@@ -71,8 +71,7 @@ contract Processor{
 
     function _transferToken(string calldata _symbol, uint256 _amount, address _receiver) private{
 
-        address currenciesAddress = pt.GetContractAddress(".Payment.Currencies");
-        ICurrencies cc = ICurrencies(currenciesAddress);
+        ICurrencies cc = ICurrencies(pt.GetContractAddress(".Payment.Currencies"));
 
         address tokenAddress = cc.GetCurrencyAddress(_symbol);
         IERC20 tk = IERC20(tokenAddress);
@@ -106,8 +105,7 @@ contract Processor{
         if(size != 0)
             revert("Receiver is contract");
 
-        address subscribersAddress = pt.GetContractAddress(".Payment.Subscribers");
-        ISubscribers sb = ISubscribers(subscribersAddress);
+        ISubscribers sb = ISubscribers(pt.GetContractAddress(".Payment.Subscribers"));
 
         if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0){
 

@@ -18,7 +18,9 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Subscribed(address subscriber, uint32 dayNumber);
+    event Subscribed(address subscriber, uint32 daysNumber);
+    event SubscriptionIncreased(address subscriber, uint32 daysNumber);
+    event SubscriptionDecreased(address subscriber, uint32 daysNumber);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
@@ -103,7 +105,7 @@ contract Subscribers{
         return(false);
     }
     //
-    function _trueAmount(uint16 _days) private view returns(uint256){
+    function _trueAmount(uint32 _days) private view returns(uint256){
 
         uint256 trueAmount = uint256( _days * subscriptionCostPerDay * 10**(maticDecimals + 18) / (maticPrice * 100));
 
@@ -184,8 +186,62 @@ contract Subscribers{
 
         return (true);
     }
+
+    function AddToSubscription(address _subscriber, uint32 _days) public ownerOnly returns(bool){
+
+        uint32 size;
+        assembly{size := extcodesize(_subscriber)}
+
+        if(size != 0)
+            revert("Contracts can not subscribe");
+
+        Subscriber storage subscriber = subscribers[_subscriber];
+      
+        uint32 tnow = uint32(block.timestamp);
+
+        if(tnow > subscriber.subscribedUntil){
+            
+            subscriber.subscribedUntil = tnow + uint32(_days * 1 days);
+            delete subscriber.transactionCount;
+        }
+        else
+            subscriber.subscribedUntil += uint32(_days * 1 days);
+
+        if(subscriber.subscribedUntil > uint32(tnow + 120 days))
+            revert("Total subscription can not exceed 120 days");
+
+        subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
+
+        emit SubscriptionIncreased(_subscriber, _days);
+        return(true);
+    }
+
+    function RemoveFromSubscription(address _subscriber, uint32 _days) public ownerOnly returns(bool){
+
+        Subscriber storage subscriber = subscribers[_subscriber];
+      
+        uint32 tnow = uint32(block.timestamp);
+
+        if(tnow > subscriber.subscribedUntil)
+            revert("Not a subscriber");
+        else{
+
+            subscriber.subscribedUntil -= uint32(_days * 1 days);
+
+            if(subscriber.subscribedUntil <= tnow){
+
+                subscriber.subscribedUntil = tnow;
+                delete subscriber.transactionCount;
+            }
+            
+            subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
+        }
+
+        emit SubscriptionDecreased(_subscriber, _days);
+        return(true);
+    }
     //
-    function Subscribe(uint16 _days, address _referrer) payable public returns(bool){
+    function Subscribe(uint32 _days, address _referrer) payable public returns(bool){
 
         if(allowSubscribing != true)
             revert("Subscribing disabled");
@@ -211,9 +267,7 @@ contract Subscribers{
 
         Subscriber storage subscriber = subscribers[subAddr];
 
-        uint32 subscribedUntil = subscriber.subscribedUntil;
-
-        if(subscriber.lastTransaction == 0 && subscribedUntil == 0){
+        if(subscriber.lastTransaction == 0 && subscriber.subscribedUntil == 0){
 
             if(subAddr != _referrer && _referrer != address(0)){
 
@@ -232,19 +286,18 @@ contract Subscribers{
         
         uint32 tnow = uint32(block.timestamp);
 
-        if(tnow > subscribedUntil){
+        if(tnow > subscriber.subscribedUntil){
             
-            subscribedUntil = tnow + uint32(_days * 1 days);
+            subscriber.subscribedUntil = tnow + uint32(_days * 1 days);
             delete subscriber.transactionCount;
         }
         else
-            subscribedUntil += uint32(_days * 1 days);
+            subscriber.subscribedUntil += uint32(_days * 1 days);
 
-        if(subscribedUntil > uint32(tnow + 120 days))
+        if(subscriber.subscribedUntil > uint32(tnow + 120 days))
             revert("Total subscription can not exceed 120 days");
 
-        subscriber.nextSeason = subscribedUntil + uint32(daysPerSeason * 1 days);
-        subscriber.subscribedUntil = subscribedUntil;
+        subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
 
         uint256 trueAmount = _trueAmount(_days); 
         uint256 subscriberAmount = msg.value - trueAmount;
@@ -296,7 +349,7 @@ contract Subscribers{
         return (true);
     }
 
-    function SetDaysPerSeason(uint16 _days) public ownerOnly returns(bool){
+    function SetDaysPerSeason(uint32 _days) public ownerOnly returns(bool){
 
         if(_days == 0)
             revert("Zero days");
