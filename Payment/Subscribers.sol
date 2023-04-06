@@ -219,6 +219,9 @@ contract Subscribers{
 
     function RemoveFromSubscription(address _subscriber, uint32 _days) public ownerOnly returns(bool){
 
+        if(_days > 120)
+            revert("Too many days");
+
         Subscriber storage subscriber = subscribers[_subscriber];
       
         uint32 tnow = uint32(block.timestamp);
