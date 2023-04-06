@@ -100,11 +100,8 @@ contract Employees{
 
         reentrantLocked = true;
 
-        address oracleAddress = pt.GetContractAddress(".Corporation.Oracle");
-        IOracle oc = IOracle(oracleAddress);
-
-        address clerkAddress = pt.GetContractAddress(".Corporation.Clerk");
-        IClerk cl = IClerk(clerkAddress);
+        IOracle oc = IOracle(pt.GetContractAddress(".Corporation.Oracle"));
+        IClerk cl = IClerk(pt.GetContractAddress(".Corporation.Clerk"));
 
         Employee storage employee = employees[msg.sender];
         
