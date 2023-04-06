@@ -175,11 +175,13 @@ contract Subscribers{
 
     function SetAllowSubscribing(bool _allow) public ownerOnly returns(bool){
 
-        if(allowSubscribing == _allow)
+        if(allowSubscribing == _allow){
+
             if(_allow == true)
                 revert("Already allowed");
             else
                 revert("Already disallowed");
+        }
 
         allowSubscribing = _allow;
 
