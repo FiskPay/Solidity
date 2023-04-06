@@ -90,7 +90,7 @@ contract Clerk{
         if(_withdrawTo(_employee, _amount) != true)
             revert("EmployeesWithdraw failed");
         
-        emit EmployeesWithdraw(employeesAddress, _employee, _amount);
+        emit ClerkWithdraw(employeesAddress, _employee, _amount);
         return(true);
     }
 
