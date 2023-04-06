@@ -96,9 +96,7 @@ contract Vault{
 
     fallback() external{
 
-        address clerkAddress = pt.GetContractAddress(".Corporation.Clerk");
-
-        if(clerkAddress != msg.sender)
+        if(pt.GetContractAddress(".Corporation.Clerk") != msg.sender)
             revert("Clerk only");
     }
 }

@@ -60,7 +60,7 @@ contract Clerk{
 
 //-----------------------------------------------------------------------// v PRIVATE FUNCTIONS
 
-    function _withdrawTo(address _reciever, uint256 _amount) private returns(bool){
+    function _withdrawTo(address _receiver, uint256 _amount) private returns(bool){
 
         address vaultAddress = pt.GetContractAddress(".Corporation.Vault");
         IVault vt = IVault(vaultAddress);
@@ -70,12 +70,8 @@ contract Clerk{
 
         try vt.ClerkWithdraw(_amount){
 
-            (bool sent,) = payable(_reciever).call{value : _amount}("");
-
-            if(sent != true)
-                return(false);
-
-            return(true);
+            (bool sent,) = payable(_receiver).call{value : _amount}("");
+            return(sent);
         }
         catch{ return(false); }
     }
@@ -94,7 +90,7 @@ contract Clerk{
         if(_withdrawTo(_employee, _amount) != true)
             revert("EmployeesWithdraw failed");
         
-        emit ClerkWithdraw(employeesAddress, _employee, _amount);
+        emit EmployeesWithdraw(employeesAddress, _employee, _amount);
         return(true);
     }
 

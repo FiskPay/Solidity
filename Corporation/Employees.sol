@@ -133,7 +133,6 @@ contract Employees{
 
                 try cl.EmployeesWithdraw(msg.sender, amount){}
                 catch{ revert("Payoff failed"); }
-
                 emit Payout(msg.sender, amount);
             }
         }
@@ -151,7 +150,6 @@ contract Employees{
 
                 try cl.EmployeesWithdraw(msg.sender, amount){}
                 catch{ revert("Payoff failed"); }
-
                 emit Payout(msg.sender, amount);
             }
         }
