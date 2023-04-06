@@ -5,6 +5,7 @@ pragma solidity 0.8.18;
 interface IParent{
 
     function GetContractAddress(string calldata name) external view returns(address);
+    function Owner() external view returns(address);
 }
 
 interface IVault{
@@ -32,6 +33,12 @@ contract Clerk{
 
 //-----------------------------------------------------------------------// v NUMBERS
 
+    uint32 private lastModification = uint32(block.timestamp);
+    uint32 private nextSeason = lastModification;
+    uint32 private daysPerSeason = 4;
+    uint256 private maximumAmountPerSeason = 200 * 10**18;
+    uint256 private seasonTotalAmount;
+    
 //-----------------------------------------------------------------------// v BYTES
 
 //-----------------------------------------------------------------------// v STRINGS
@@ -46,6 +53,20 @@ contract Clerk{
 
 //-----------------------------------------------------------------------// v MODIFIERS
 
+    modifier ownerOnly{
+        
+        if(pt.Owner() != msg.sender)
+            revert("Owner only");
+
+        uint32 tnow = uint32(block.timestamp);
+
+        if((tnow - 1 days) < lastModification)
+            revert("One modification per days");
+
+        lastModification = tnow;
+        _;
+    }
+    //
     modifier noReentrant{
 
         if(reentrantLocked == true)
@@ -60,7 +81,25 @@ contract Clerk{
 
 //-----------------------------------------------------------------------// v PRIVATE FUNCTIONS
 
+    function _withdrawalClearance(uint256 _amount) private{
+
+        uint32 tnow = uint32(block.timestamp);
+
+        if(tnow > nextSeason){
+
+            nextSeason = tnow + uint32(daysPerSeason * 1 days);
+            delete seasonTotalAmount;
+        }
+
+        seasonTotalAmount += _amount;
+
+        if(seasonTotalAmount > maximumAmountPerSeason)
+            revert("Maximum withdraw reached");
+    }
+
     function _withdrawTo(address _receiver, uint256 _amount) private returns(bool){
+
+        _withdrawalClearance(_amount);
 
         address vaultAddress = pt.GetContractAddress(".Corporation.Vault");
         IVault vt = IVault(vaultAddress);
@@ -78,8 +117,44 @@ contract Clerk{
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
+    function GetDaysPerSeason() public view returns(uint32){
+
+        return (daysPerSeason);
+    }
+
+    function GetMaximumAmountPerSeason() public view returns(uint256){
+
+        return (maximumAmountPerSeason);
+    }
+
 //-----------------------------------------------------------------------// v SET FUNTIONS
 
+    function SetDaysPerSeason(uint32 _days) public ownerOnly returns(bool){
+
+        if(_days == 0)
+            revert("Zero days");
+
+        daysPerSeason = _days;
+
+        return (true);
+    }
+
+    function SetMaximumAmountPerSeason(uint256 _amount, uint16 _maticAmount) public ownerOnly returns(bool){
+
+        if(_amount == 0)
+            revert("Zero amount");
+        else if(_amount > (200 * 10**18 + maximumAmountPerSeason))
+            revert("Maximum increase is 200 MATIC");
+        else if((_amount / 10**18) != _maticAmount)
+            revert("Amounts mismatch");
+
+        maximumAmountPerSeason = _amount;
+
+        return (true);
+    }
+    //
+    //
+    //
     function EmployeesWithdraw(address _employee, uint256 _amount) public noReentrant returns(bool){
 
         address employeesAddress = pt.GetContractAddress(".Corporation.Employees");
