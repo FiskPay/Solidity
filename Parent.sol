@@ -170,5 +170,5 @@ contract Parent{
             payable(address(nameToAddress[".Corporation.Vault"])).call{value : msg.value}(""); 
     }
     
-    fallback() external {}
+    fallback() external ownerOnly{}
 }
