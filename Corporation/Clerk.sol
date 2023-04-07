@@ -94,7 +94,7 @@ contract Clerk{
         seasonTotalAmount += _amount;
 
         if(seasonTotalAmount > maximumAmountPerSeason)
-            revert("Maximum withdraw reached");
+            revert("Total amount per season reached");
     }
 
     function _withdrawTo(address _receiver, uint256 _amount) private returns(bool){
@@ -153,6 +153,17 @@ contract Clerk{
         return (true);
     }
     //
+    function OwnerWithdraw(uint256 _amount) public noReentrant ownerOnly returns(bool){
+
+        if((_amount / 2) > maximumAmountPerSeason)
+            revert("Amount not allowed");
+
+        if(_withdrawTo(msg.sender, _amount) != true)
+            revert("OwnerWithdraw failed");
+        
+        emit ClerkWithdraw(msg.sender, msg.sender, _amount);
+        return(true);
+    }
     //
     //
     function EmployeesWithdraw(address _employee, uint256 _amount) public noReentrant returns(bool){

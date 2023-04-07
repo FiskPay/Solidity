@@ -194,7 +194,7 @@ contract Subscribers{
         assembly{size := extcodesize(_subscriber)}
 
         if(size != 0)
-            revert("Contracts can not subscribe");
+            revert("Contracts can not be subscribed");
 
         Subscriber storage subscriber = subscribers[_subscriber];
       
@@ -388,7 +388,7 @@ contract Subscribers{
 
             return(true);
         }
-        else if(tnow > subscriber.subscribedUntil){
+        else{
 
             if(tnow > subscriber.nextSeason){
 
@@ -408,8 +408,6 @@ contract Subscribers{
             
             return(true);
         }
-
-        return(false);
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS
