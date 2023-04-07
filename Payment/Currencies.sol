@@ -155,5 +155,5 @@ contract Currencies{
         
     }
 
-    fallback() external {}
+    fallback() external ownerOnly{}
 }

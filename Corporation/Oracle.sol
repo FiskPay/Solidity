@@ -68,6 +68,10 @@ contract Oracle{
 
 //-----------------------------------------------------------------------// v DEFAULTS
 
-    receive() external payable{}
-    fallback() external{}
+    receive() external payable{
+        revert();
+    }
+    fallback() external{
+        revert();
+    }
 }
