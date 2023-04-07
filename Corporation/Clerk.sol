@@ -33,8 +33,7 @@ contract Clerk{
 
 //-----------------------------------------------------------------------// v NUMBERS
 
-    uint32 private lastModification = uint32(block.timestamp);
-    uint32 private nextSeason = lastModification;
+    uint32 private nextSeason = uint32(block.timestamp);
     uint32 private daysPerSeason = 4;
     uint256 private maximumAmountPerSeason = 200 * 10**18;
     uint256 private seasonTotalAmount;
@@ -58,12 +57,6 @@ contract Clerk{
         if(pt.Owner() != msg.sender)
             revert("Owner only");
 
-        uint32 tnow = uint32(block.timestamp);
-
-        if((tnow - 1 days) < lastModification)
-            revert("One modification per days");
-
-        lastModification = tnow;
         _;
     }
     //
@@ -143,8 +136,6 @@ contract Clerk{
 
         if(_amount == 0)
             revert("Zero amount");
-        else if(_amount > (200 * 10**18 + maximumAmountPerSeason))
-            revert("Maximum increase is 200 MATIC");
         else if((_amount / 10**18) != _maticAmount)
             revert("Amounts mismatch");
 
@@ -153,10 +144,7 @@ contract Clerk{
         return (true);
     }
     //
-    function OwnerWithdraw(uint256 _amount) public noReentrant ownerOnly returns(bool){
-
-        if((_amount / 2) > maximumAmountPerSeason)
-            revert("Amount not allowed");
+    function OwnerWithdraw(uint256 _amount) public ownerOnly returns(bool){
 
         if(_withdrawTo(msg.sender, _amount) != true)
             revert("OwnerWithdraw failed");
