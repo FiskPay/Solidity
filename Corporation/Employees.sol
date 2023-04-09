@@ -39,7 +39,7 @@ contract Employees{
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
-    address constant private parentAddress = 0xA00A1ED23A4cC11182db678a67FcdfB45fEe1FF8;
+    address constant private parentAddress = 0x163342FAe2bBe3303e5A9ADCe4BC9fb44d0FF062;
 
 //-----------------------------------------------------------------------// v NUMBERS
 
@@ -223,7 +223,7 @@ contract Employees{
         if(pt.GetContractAddress(".Corporation.Clerk") != msg.sender){
 
             if(msg.value > 0)
-                payable(pt.GetContractAddress(".Corporation.Vault")).call{value : msg.value}("");
+                payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : msg.value}("");
                 
         }
     }

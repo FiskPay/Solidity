@@ -24,7 +24,7 @@ contract Vault{
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
-    address constant private parentAddress = 0xA00A1ED23A4cC11182db678a67FcdfB45fEe1FF8;
+    address constant private parentAddress = 0x163342FAe2bBe3303e5A9ADCe4BC9fb44d0FF062;
 
 //-----------------------------------------------------------------------// v NUMBERS
 
@@ -74,7 +74,7 @@ contract Vault{
         if(clerkAddress != msg.sender)
             revert("Clerk only");
 
-        (bool sent,) = payable(clerkAddress).call{value : _amount}("");
+        (bool sent,) = payable(address(clerkAddress)).call{value : _amount}("");
 
         if(sent != true)
            revert("ClerkWithdraw failed");

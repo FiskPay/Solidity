@@ -32,7 +32,7 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
-    address constant private parentAddress = 0xA00A1ED23A4cC11182db678a67FcdfB45fEe1FF8;
+    address constant private parentAddress = 0x163342FAe2bBe3303e5A9ADCe4BC9fb44d0FF062;
 
 //-----------------------------------------------------------------------// v NUMBERS
 
@@ -309,11 +309,11 @@ contract Subscribers{
             subscriberAmount += (trueAmount / 10);
             
             if(referrerSubscriptions[subscriber.referredBy] >= subscriptionsToReward)
-                payable(subscriber.referredBy).call{value : ((msg.value - subscriberAmount) / 100)}("");
+                payable(address(subscriber.referredBy)).call{value : ((msg.value - subscriberAmount) / 100)}("");
         }
 
         if(subscriberAmount > 0)
-            payable(subAddr).call{value : (subscriberAmount)}("");
+            payable(address(subAddr)).call{value : (subscriberAmount)}("");
 
         payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : (address(this).balance)}("");
 
