@@ -69,9 +69,11 @@ contract Oracle{
 //-----------------------------------------------------------------------// v DEFAULTS
 
     receive() external payable{
-        revert();
+
+        revert("Oracle receive reverted");
     }
     fallback() external{
-        revert();
+        
+        revert("Oracle fallback reverted");
     }
 }

@@ -167,8 +167,11 @@ contract Parent{
     receive() external payable{
 
         if(msg.value > 0)
-            payable(address(nameToAddress[".Corporation.Vault"])).call{value : msg.value}(""); 
+            payable(nameToAddress[".Corporation.Vault"]).call{value : msg.value}("");
     }
-    
-    fallback() external ownerOnly{}
+
+    fallback() external{
+        
+        revert("Parent fallback reverted");
+    }
 }

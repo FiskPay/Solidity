@@ -418,5 +418,8 @@ contract Subscribers{
             payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : msg.value}("");
     }
 
-    fallback() external ownerOnly{}
+    fallback() external{
+        
+        revert("Subscribers fallback reverted");
+    }
 }

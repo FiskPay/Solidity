@@ -218,6 +218,18 @@ contract Employees{
 
 //-----------------------------------------------------------------------// v DEFAULTS
 
-    receive() external payable{}
-    fallback() external ownerOnly{}
+    receive() external payable{
+
+        if(pt.GetContractAddress(".Corporation.Clerk") != msg.sender){
+
+            if(msg.value > 0)
+                payable(pt.GetContractAddress(".Corporation.Vault")).call{value : msg.value}("");
+                
+        }
+    }
+
+    fallback() external{
+        
+        revert("Employees fallback reverted");
+    }
 }

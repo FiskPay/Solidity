@@ -151,9 +151,11 @@ contract Currencies{
     receive() external payable{
 
         if(msg.value > 0)
-            payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : msg.value}("");
-        
+            payable(pt.GetContractAddress(".Corporation.Vault")).call{value : msg.value}("");
     }
 
-    fallback() external ownerOnly{}
+    fallback() external{
+        
+        revert("Currencies fallback reverted");
+    }
 }

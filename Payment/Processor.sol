@@ -138,6 +138,14 @@ contract Processor{
 
 //-----------------------------------------------------------------------// v DEFAULTS
 
-    receive() external payable{}
-    fallback() external payable{}
+    receive() external payable{
+
+        if(msg.value > 0)
+            payable(pt.GetContractAddress(".Corporation.Vault")).call{value : msg.value}("");
+    }
+    
+    fallback() external{
+        
+        revert("Processor fallback reverted");
+    }
 }

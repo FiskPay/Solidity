@@ -98,7 +98,7 @@ contract Clerk{
         IVault vt = IVault(vaultAddress);
 
         if(_amount > address(vaultAddress).balance)
-            revert("Not enough MATIC");
+            revert("Vault balance insufficient");
 
         try vt.ClerkWithdraw(_amount){
 
@@ -170,6 +170,20 @@ contract Clerk{
 
 //-----------------------------------------------------------------------// v DEFAULTS
 
-    receive() external payable{}
-    fallback() external ownerOnly{}
+    receive() external payable{
+
+        address vaultAddress = pt.GetContractAddress(".Corporation.Vault");
+
+        if(vaultAddress != msg.sender){
+
+            if(msg.value > 0)
+                payable(vaultAddress).call{value : msg.value}("");
+                
+        }
+    }
+
+    fallback() external{
+
+        revert("Clerk fallback reverted");
+    }
 }
