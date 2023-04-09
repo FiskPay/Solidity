@@ -28,7 +28,8 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v BOOLEANS
 
-    bool allowSubscribing = true;
+    bool private allowSubscribing = true;
+    bool private reentrantLocked = false;
 
 //-----------------------------------------------------------------------// v ADDRESSES
 
@@ -247,6 +248,11 @@ contract Subscribers{
     //
     function Subscribe(uint32 _days, address _referrer) payable public returns(bool){
 
+        if(reentrantLocked == true)
+            revert("Reentrance failed");
+
+        reentrantLocked = true;
+
         if(allowSubscribing != true)
             revert("Subscribing disabled");
 
@@ -316,6 +322,8 @@ contract Subscribers{
             payable(address(subAddr)).call{value : (subscriberAmount)}("");
 
         payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : (address(this).balance)}("");
+
+        reentrantLocked = false;
 
         emit Subscribed(subAddr, _days);
         return true;

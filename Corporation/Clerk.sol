@@ -144,7 +144,7 @@ contract Clerk{
         return (true);
     }
     //
-    function OwnerWithdraw(uint256 _amount) public ownerOnly returns(bool){
+    function OwnerWithdraw(uint256 _amount) public ownerOnly noReentrant returns(bool){
 
         if(_withdrawTo(msg.sender, _amount) != true)
             revert("OwnerWithdraw failed");
