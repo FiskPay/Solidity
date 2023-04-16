@@ -126,7 +126,7 @@ contract Processor{
             if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, _amount, _timestamp)) != _verification)
                 revert("Verification failed");
 
-             _transferToken(_symbol, _amount, _receiver);
+            _transferToken(_symbol, _amount, _receiver);
         }
         else
             revert("Processing failed");
