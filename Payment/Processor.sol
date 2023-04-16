@@ -71,7 +71,9 @@ contract Processor{
 
     function _transferToken(string calldata _symbol, uint256 _amount, address _receiver) private{
 
-        address tokenAddress = (ICurrencies(pt.GetContractAddress(".Payment.Currencies"))).GetCurrencyAddress(_symbol);
+        ICurrencies cc = ICurrencies(pt.GetContractAddress(".Payment.Currencies"));
+
+        address tokenAddress = cc.GetCurrencyAddress(_symbol);
         IERC20 tk = IERC20(tokenAddress);
 
         if(tokenAddress == address(0))
@@ -106,9 +108,11 @@ contract Processor{
         if(uint32(block.timestamp - 3 hours) > _timestamp)
             revert ("Transaction expired");
 
+        ISubscribers sb = ISubscribers(pt.GetContractAddress(".Payment.Subscribers"));
+
         if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0){
 
-            if((ISubscribers(pt.GetContractAddress(".Payment.Subscribers"))).AllowProcessing(_receiver, msg.value) != true)
+            if(sb.AllowProcessing(_receiver, msg.value) != true)
                 revert("Transaction limit reached");
 
             if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, msg.value, _timestamp)) != _verification)
@@ -118,13 +122,13 @@ contract Processor{
         }
         else if(keccak256(abi.encodePacked(_symbol)) != keccak256(abi.encodePacked("MATIC")) && _amount > 0 && msg.value == 0){
 
-            if((ISubscribers(pt.GetContractAddress(".Payment.Subscribers"))).AllowProcessing(_receiver, 0) != true)
+            if(sb.AllowProcessing(_receiver, 0) != true)
                 revert("Subscriber service only");
 
             if(sha256(abi.encodePacked(_symbol, msg.sender, _receiver, _amount, _timestamp)) != _verification)
                 revert("Verification failed");
 
-            _transferToken(_symbol, _amount, _receiver);
+             _transferToken(_symbol, _amount, _receiver);
         }
         else
             revert("Processing failed");
