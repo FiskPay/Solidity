@@ -71,9 +71,7 @@ contract Processor{
 
     function _transferToken(string calldata _symbol, uint256 _amount, address _receiver) private{
 
-        ICurrencies cc = ICurrencies(pt.GetContractAddress(".Payment.Currencies"));
-
-        address tokenAddress = cc.GetCurrencyAddress(_symbol);
+        address tokenAddress = (ICurrencies(pt.GetContractAddress(".Payment.Currencies"))).GetCurrencyAddress(_symbol);
         IERC20 tk = IERC20(tokenAddress);
 
         if(tokenAddress == address(0))
