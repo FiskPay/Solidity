@@ -105,6 +105,9 @@ contract Processor{
         if(size != 0)
             revert("Receiver is contract");
 
+        if(uint32(block.timestamp - 6 hours) > _timestamp)
+            revert ("Transaction expired");
+
         ISubscribers sb = ISubscribers(pt.GetContractAddress(".Payment.Subscribers"));
 
         if(keccak256(abi.encodePacked(_symbol)) == keccak256(abi.encodePacked("MATIC")) && msg.value > 0 && _amount == 0){
