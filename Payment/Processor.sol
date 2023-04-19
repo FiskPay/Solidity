@@ -105,7 +105,7 @@ contract Processor{
         if(size != 0)
             revert("Receiver is contract");
 
-        if(uint32(block.timestamp - 3 hours) > _timestamp)
+        if(uint32(block.timestamp - 5 minutes) > _timestamp)
             revert ("Transaction expired");
 
         ISubscribers sb = ISubscribers(pt.GetContractAddress(".Payment.Subscribers"));
