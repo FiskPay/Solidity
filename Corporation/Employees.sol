@@ -86,7 +86,17 @@ contract Employees{
         Employee memory employee = employees[_employee];
 
         dailyWage = employee.dailyWage;
-        daysUnpaid = (employees[_employee].lastPayoff > 0) ? ((uint32(block.timestamp) - employees[_employee].lastPayoff) / (1 days)) : 0;
+
+        if(employee.lastPayoff > 0) {
+
+            if(employee.releasedAt > 0)
+                daysUnpaid = ((employee.releasedAt - employees[_employee].lastPayoff) / (1 days));
+            else
+                daysUnpaid = ((uint32(block.timestamp) - employees[_employee].lastPayoff) / (1 days));
+        }
+        else
+            daysUnpaid = 0;
+
         lastPayoff = employee.lastPayoff;
         isEmployee = employee.isEmployee;
     }
