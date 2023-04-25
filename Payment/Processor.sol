@@ -30,7 +30,7 @@ contract Processor{
 
 //-----------------------------------------------------------------------// v EVENTS
 
-    event Processed(bytes32 verification, uint32 timestamp);
+    event Processed(bytes32 indexed verification, uint32 timestamp);
 
 //-----------------------------------------------------------------------// v INTERFACES
 
