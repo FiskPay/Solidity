@@ -141,8 +141,7 @@ contract Employees{
                 revert("Already paid");
             else{
 
-                try cl.EmployeesWithdraw(msg.sender, amount){}
-                catch{ revert("Payoff failed"); }
+                cl.EmployeesWithdraw(msg.sender, amount);
                 emit Payout(msg.sender, amount);
             }
         }
@@ -158,8 +157,7 @@ contract Employees{
 
             if(amount > 0){
 
-                try cl.EmployeesWithdraw(msg.sender, amount){}
-                catch{ revert("Payoff failed"); }
+                cl.EmployeesWithdraw(msg.sender, amount);
                 emit Payout(msg.sender, amount);
             }
         }
