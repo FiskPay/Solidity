@@ -66,12 +66,18 @@ contract Subscribers{
         uint32 lastTransaction;  
     }
 
+    struct Referrer{
+
+        uint32 referralCount;
+        uint256 earnings;
+    }
+
 //-----------------------------------------------------------------------// v ENUMS
 
 //-----------------------------------------------------------------------// v MAPPINGS
 
     mapping(address => Subscriber) private subscribers;
-    mapping(address => uint32) private referrerSubscriptions;
+    mapping(address => Referrer) private referrers;
 
 //-----------------------------------------------------------------------// v MODIFIERS
 
@@ -121,30 +127,31 @@ contract Subscribers{
 
 //-----------------------------------------------------------------------// v GET FUNCTIONS
 
-    function GetReferrerSubscriptions(address _referrer) public view returns(uint32){
-
-        return (referrerSubscriptions[_referrer]);
-    }
-    //
     function GetAllowSubscribing() public view returns(bool){
 
         return (allowSubscribing);
     }
     //
-    function SubscriberProfile(address _subscriber) public view returns (address referredBy, uint32 transactionCount, uint32 nextSeason, uint32 subscribedUntil, uint32 subscribtionDaysLeft, bool isSubscriber, uint32 lastTransaction){
+    function Profile(address _client) public view returns (address referredBy, uint32 referralCount, uint256 referralEarnings, uint32 transactionCount, uint32 lastTransaction, bool isSubscriber, uint32 subscribedUntil, uint32 subscribtionDaysLeft, uint32 nextSeason, uint32 seasonDaysLeft){
     
-        Subscriber memory subscriber = subscribers[_subscriber];
+        Subscriber memory subscriber = subscribers[_client];
+        Referrer memory referrer = referrers[_client];
 
         referredBy = subscriber.referredBy;
+        referralCount = referrer.referralCount;
+        referralEarnings = referrer.earnings;
+
         transactionCount = subscriber.transactionCount;
-        nextSeason = subscriber.nextSeason;
-        subscribedUntil = subscriber.subscribedUntil;
         lastTransaction = subscriber.lastTransaction;
 
         uint32 tnow = uint32(block.timestamp);
 
+        isSubscriber =  (subscriber.subscribedUntil >= tnow) ? true : false;
+        subscribedUntil = subscriber.subscribedUntil;
         subscribtionDaysLeft = (subscribedUntil >= tnow) ? ((subscribedUntil - tnow) / 1 days) : 0;
-        isSubscriber =  (subscribedUntil >= tnow) ? true : false;
+
+        nextSeason = subscriber.nextSeason;
+        seasonDaysLeft = isSubscriber ? daysPerSeason : ((nextSeason >= tnow) ? ((nextSeason - tnow) / 1 days) : 0);
     }
     //
     function GetSubscriptionCostPerDay() public view returns(uint16){
@@ -209,8 +216,8 @@ contract Subscribers{
         else
             subscriber.subscribedUntil += uint32(_days * 1 days);
 
-        if(subscriber.subscribedUntil > uint32(tnow + 120 days))
-            revert("Total subscription can not exceed 120 days");
+        if(subscriber.subscribedUntil > uint32(tnow + 365 days))
+            revert("Total subscription can not exceed 365 days");
 
         subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
 
@@ -220,7 +227,7 @@ contract Subscribers{
 
     function RemoveFromSubscription(address _subscriber, uint32 _days) public ownerOnly returns(bool){
 
-        if(_days > 120)
+        if(_days > 365)
             revert("Too many days");
 
         Subscriber storage subscriber = subscribers[_subscriber];
@@ -260,9 +267,9 @@ contract Subscribers{
             revert("MATIC amount is zero");
             
         uint32 size;
-        address subAddr = msg.sender;
+        address subscriberAddress = msg.sender;
 
-        assembly{size := extcodesize(subAddr)}
+        assembly{size := extcodesize(subscriberAddress)}
 
         if(size != 0)
             revert("Contracts can not subscribe");
@@ -273,23 +280,20 @@ contract Subscribers{
         if(uint32(_days * subscriptionCostPerDay) > _usdAmount(msg.value))
             revert("MATIC amount insufficient");
 
-        Subscriber storage subscriber = subscribers[subAddr];
+        Subscriber storage subscriber = subscribers[subscriberAddress];
 
         if(subscriber.lastTransaction == 0 && subscriber.subscribedUntil == 0){
 
-            if(subAddr != _referrer && _referrer != address(0)){
+            if(subscriberAddress != _referrer && _referrer != address(0)){
 
                 assembly{size := extcodesize(_referrer)}
 
-                if(size != 0)
-                    revert("Referrer is contract");
+                if(size == 0){
 
-                referrerSubscriptions[_referrer]++;
-                subscriber.referredBy = _referrer;
+                    subscriber.referredBy = _referrer;
+                    referrers[subscriber.referredBy].referralCount++;
+                }
             }
-
-            if(_days < 15)
-                revert("First subscription should be at least 15 days");
         }
         
         uint32 tnow = uint32(block.timestamp);
@@ -302,8 +306,8 @@ contract Subscribers{
         else
             subscriber.subscribedUntil += uint32(_days * 1 days);
 
-        if(subscriber.subscribedUntil > uint32(tnow + 120 days))
-            revert("Total subscription can not exceed 120 days");
+        if(subscriber.subscribedUntil > uint32(tnow + 365 days))
+            revert("Total subscription can not exceed 365 days");
 
         subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
 
@@ -312,20 +316,25 @@ contract Subscribers{
 
         if(subscriber.referredBy != address(0)){
 
-            subscriberAmount += (trueAmount / 10);
+            subscriberAmount += (trueAmount / 20);
             
-            if(referrerSubscriptions[subscriber.referredBy] >= subscriptionsToReward)
-                payable(address(subscriber.referredBy)).call{value : ((msg.value - subscriberAmount) / 100)}("");
+            if(referrers[subscriber.referredBy].referralCount >= subscriptionsToReward){
+
+                uint256 referrerAmount = ((msg.value - subscriberAmount) / 100);
+
+                payable(address(subscriber.referredBy)).call{value : referrerAmount}("");
+                referrers[subscriber.referredBy].earnings += referrerAmount;
+            }
         }
 
         if(subscriberAmount > 0)
-            payable(address(subAddr)).call{value : (subscriberAmount)}("");
+            payable(address(subscriberAddress)).call{value : (subscriberAmount)}("");
 
         payable(address(pt.GetContractAddress(".Corporation.Vault"))).call{value : (address(this).balance)}("");
 
         reentrantLocked = false;
 
-        emit Subscribed(subAddr, _days);
+        emit Subscribed(subscriberAddress, _days);
         return true;
     }
     //
