@@ -208,11 +208,8 @@ contract Subscribers{
       
         uint32 tnow = uint32(block.timestamp);
 
-        if(tnow > subscriber.subscribedUntil){
-            
+        if(tnow > subscriber.subscribedUntil)
             subscriber.subscribedUntil = tnow + uint32(_days * 1 days);
-            delete subscriber.transactionCount;
-        }
         else
             subscriber.subscribedUntil += uint32(_days * 1 days);
 
@@ -220,6 +217,7 @@ contract Subscribers{
             revert("Total subscription can not exceed 365 days");
 
         subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
+        delete subscriber.transactionCount;
 
         emit SubscriptionIncreased(_subscriber, _days);
         return(true);
@@ -240,11 +238,8 @@ contract Subscribers{
 
             subscriber.subscribedUntil -= uint32(_days * 1 days);
 
-            if(subscriber.subscribedUntil <= tnow){
-
+            if(tnow > subscriber.subscribedUntil)
                 subscriber.subscribedUntil = tnow;
-                delete subscriber.transactionCount;
-            }
             
             subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
         }
@@ -298,11 +293,8 @@ contract Subscribers{
         
         uint32 tnow = uint32(block.timestamp);
 
-        if(tnow > subscriber.subscribedUntil){
-            
+        if(tnow > subscriber.subscribedUntil)
             subscriber.subscribedUntil = tnow + uint32(_days * 1 days);
-            delete subscriber.transactionCount;
-        }
         else
             subscriber.subscribedUntil += uint32(_days * 1 days);
 
@@ -310,6 +302,7 @@ contract Subscribers{
             revert("Total subscription can not exceed 365 days");
 
         subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
+        delete subscriber.transactionCount;
 
         uint256 trueAmount = _trueAmount(_days); 
         uint256 subscriberAmount = msg.value - trueAmount;
@@ -397,15 +390,7 @@ contract Subscribers{
 
         uint32 tnow = uint32(block.timestamp);
 
-        if(tnow <= subscriber.subscribedUntil){
-
-            subscriber.nextSeason = subscriber.subscribedUntil + uint32(daysPerSeason * 1 days);
-            subscriber.transactionCount++;
-            subscriber.lastTransaction = tnow;
-
-            return(true);
-        }
-        else{
+        if(tnow > subscriber.subscribedUntil){
 
             if(tnow > subscriber.nextSeason){
 
@@ -420,11 +405,11 @@ contract Subscribers{
 
             if(_usdAmount(_amount) >= uint32(minimumUSDToCount))
                 subscriber.transactionCount++;
-
-            subscriber.lastTransaction = tnow;
-            
-            return(true);
         }
+
+        subscriber.lastTransaction = tnow;
+        
+        return(true);    
     }
 
 //-----------------------------------------------------------------------// v DEFAULTS
